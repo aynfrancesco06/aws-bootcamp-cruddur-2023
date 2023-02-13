@@ -12,4 +12,4 @@
 ### Homework Stretch Goals
         - Requested a support ticket for an increase on their service limit specifically for EIPs
 
-            https://github.com/aynfrancesco06/aws-bootcamp-cruddur-2023/issues/5#issue-1581174327
+            [https://github.com/aynfrancesco06/aws-bootcamp-cruddur-2023/issues/5#issue-1581174327](https://user-images.githubusercontent.com/56792014/218421189-ecc11ea8-af56-49a2-ac8d-c0c4e03035cf.PNG)
