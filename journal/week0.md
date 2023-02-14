@@ -13,3 +13,5 @@
 ### Homework Stretch Goals
         - Requested a support ticket for an increase on their service limit specifically for EIPs
                 https://user-images.githubusercontent.com/56792014/218421189-ecc11ea8-af56-49a2-ac8d-c0c4e03035cf.PNG
+        - Created a CI/CD Pipeline for Crudder
+                https://lucid.app/lucidchart/e1e898b4-49ba-4e29-ba6e-4e55972015b0/edit?viewport_loc=-169%2C-160%2C2994%2C1437%2C0_0&invitationId=inv_574532a7-cc06-46d7-803c-78144de81902
