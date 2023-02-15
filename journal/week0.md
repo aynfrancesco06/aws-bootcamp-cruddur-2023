@@ -14,6 +14,11 @@
 #### 4. Recreate Logical Architectual Diagram in Lucid Charts
         - https://lucid.app/lucidchart/88a89c81-ceab-4ffd-8546-c151efe651bf/edit?viewport_loc=-44%2C301%2C2219%2C1065%2C0_0&invitationId=inv_164c3d2f-12b0-4a90-aa26-e6981458c5c0
 
+#### 5. Recreate Conceptual Architectural Diagram in Lucid Charts
+        - https://lucid.app/lucidchart/fc941e5f-b8d8-47c5-9989-00cee74692d3/edit?viewport_loc=-1701%2C-1045%2C3521%2C1606%2C0_0&invitationId=inv_bab71b32-5e00-427b-8dae-d5e0d9adfeb5 
+ 
+#### 6. Added CI/CD Logical Architectural Diagram
+        - https://lucid.app/lucidchart/e1e898b4-49ba-4e29-ba6e-4e55972015b0/edit?viewport_loc=-14%2C-637%2C2994%2C1437%2C0_0&invitationId=inv_574532a7-cc06-46d7-803c-78144de81902
 
 ### Homework Stretch Goals
         - Requested a support ticket for an increase on their service limit specifically for EIPs
