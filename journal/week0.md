@@ -26,9 +26,10 @@
         ![image](https://user-images.githubusercontent.com/56792014/219279881-01dd0c51-e69c-4002-882f-7ad02a6ba420.png)
 
 
-#### Homework Stretch Goals
-Requested a support ticket for an increase on their service limit specifically for EIPs
-        ![image](https://user-images.githubusercontent.com/56792014/218421189-ecc11ea8-af56-49a2-ac8d-c0c4e03035cf.PNG)
+# Homework Stretch Goals
+
+#### Requested a support ticket for an increase on their service limit specifically for EIPs
+![image](https://user-images.githubusercontent.com/56792014/218421189-ecc11ea8-af56-49a2-ac8d-c0c4e03035cf.PNG)
              
                         
 
