@@ -5,6 +5,8 @@
 
 
 #### 2. Followed the sequence on generating users and generating AWS Credentials
+![image](https://user-images.githubusercontent.com/56792014/219285370-d6eac4f4-8e77-4964-af41-0fedd828a8b8.png)
+
 
 #### 3. Also created budgets and alarms both in AWS GUI and CLI as that is what I'm accustomed to.
         - AWS GUI Procedures are recorded on the links below.
