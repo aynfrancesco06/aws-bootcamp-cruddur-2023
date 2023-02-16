@@ -21,14 +21,14 @@
         - https://lucid.app/lucidchart/e1e898b4-49ba-4e29-ba6e-4e55972015b0/edit?viewport_loc=-14%2C-637%2C2994%2C1437%2C0_0&invitationId=inv_574532a7-cc06-46d7-803c-78144de81902
 
 ### Homework Stretch Goals
-        - Requested a support ticket for an increase on their service limit specifically for EIPs
-                https://user-images.githubusercontent.com/56792014/218421189-ecc11ea8-af56-49a2-ac8d-c0c4e03035cf.PNG
-        - Created a CI/CD Pipeline for Crudder
+Requested a support ticket for an increase on their service limit specifically for EIPs
+        https://user-images.githubusercontent.com/56792014/218421189-ecc11ea8-af56-49a2-ac8d-c0c4e03035cf.PNG
+Created a CI/CD Pipeline for Crudder
                 https://lucid.app/lucidchart/e1e898b4-49ba-4e29-ba6e-4e55972015b0/edit?viewport_loc=-169%2C-160%2C2994%2C1437%2C0_0&invitationId=inv_574532a7-cc06-46d7-803c-78144de81902
 
 ### Create an EventBridge event that sends SNS notifications whenever a service health issue arises
-                ![image](https://user-images.githubusercontent.com/56792014/218775353-d58d705d-46ba-4cb6-a783-a3e591b780e9.png)
-        - Created SNS Topic to connect the EventBridge Event with
-                ![image](https://user-images.githubusercontent.com/56792014/218781128-05e4d38c-8430-4a75-bb33-dcfd2e7488b6.png)
-                ![image](https://user-images.githubusercontent.com/56792014/218781401-4c35e35c-e252-4084-a843-1d44ba5eeaf6.png)
+![image](https://user-images.githubusercontent.com/56792014/218775353-d58d705d-46ba-4cb6-a783-a3e591b780e9.png)
+        Created SNS Topic to connect the EventBridge Event with
+        ![image](https://user-images.githubusercontent.com/56792014/218781128-05e4d38c-8430-4a75-bb33-dcfd2e7488b6.png)
+        ![image](https://user-images.githubusercontent.com/56792014/218781401-4c35e35c-e252-4084-a843-1d44ba5eeaf6.png)
         
