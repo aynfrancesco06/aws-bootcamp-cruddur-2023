@@ -1,6 +1,8 @@
 # Week 0 — Billing and Architecture
 
 #### 1. Worked on getting the CLI for AWS done
+![image](https://user-images.githubusercontent.com/56792014/219281228-851c7af9-52a5-4196-8c42-ed8393e2efa5.png)
+
 
 #### 2. Followed the sequence on generating users and generating AWS Credentials
 
