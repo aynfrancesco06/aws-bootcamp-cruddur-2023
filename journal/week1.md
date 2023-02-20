@@ -24,10 +24,14 @@ EXPOSE ${PORT}
 CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0", "--port=4567"]
 ```
         - Build backend-flask container
-```docker build -t  backend-flask ./backend-flask```
+```
+docker build -t  backend-flask ./backend-flask
+```
       
         - Run container
-``` docker run --rm -p 4567:4567 -it -e FRONTEND_URL='*' -e BACKEND_URL='*' backend-flask ```
+```
+docker run --rm -p 4567:4567 -it -e FRONTEND_URL='*' -e BACKEND_URL='*' backend-flask 
+```
 
         - Created a file in frontend-react-js/DockerFile
 ```
@@ -42,9 +46,13 @@ EXPOSE ${PORT}
 CMD ["npm", "start"]
 ```
         - Build container
-```docker build -t frontend-react-js ./frontend-react-js```
+```
+docker build -t frontend-react-js ./frontend-react-js
+```
         - Run container
-```docker run -p 3000:3000 -d frontend-react-js```        
+```
+docker run -p 3000:3000 -d frontend-react-js
+```        
 
 #### 3. Created docker compose file in /workspace/aws-bootcamp-cruddur-2023
  ```
