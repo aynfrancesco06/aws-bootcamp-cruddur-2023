@@ -6,7 +6,8 @@
   
 #### 2. Worked on adding the notifications feature both on Frontend and Backend
 ![image](https://user-images.githubusercontent.com/56792014/220064570-be7187dd-3314-4eb7-b3f4-3d4fe167dc8f.png)
-        - Created a file in backend-flask/DockerFile
+
+- Created a file in backend-flask/DockerFile
           
 ```
 FROM python:3.10-slim-buster
@@ -23,17 +24,18 @@ ENV FLASK_ENV=development
 EXPOSE ${PORT}
 CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0", "--port=4567"]
 ```
-        - Build backend-flask container
+
+- Build backend-flask container
 ```
 docker build -t  backend-flask ./backend-flask
 ```
-      
-        - Run container
+
+- Run container
 ```
 docker run --rm -p 4567:4567 -it -e FRONTEND_URL='*' -e BACKEND_URL='*' backend-flask 
 ```
 
-        - Created a file in frontend-react-js/DockerFile
+- Created a file in frontend-react-js/DockerFile
 ```
 FROM node:16.18
 
@@ -45,11 +47,13 @@ RUN npm install
 EXPOSE ${PORT}
 CMD ["npm", "start"]
 ```
-        - Build container
+
+- Build container
 ```
 docker build -t frontend-react-js ./frontend-react-js
 ```
-        - Run container
+
+- Run container
 ```
 docker run -p 3000:3000 -d frontend-react-js
 ```        
@@ -86,7 +90,7 @@ networks:
 
 
 #### 4. Worked on adding databases in gitpod.yml and docker compose
-        - Modified gitpod.yml file that installs postgre whenever codespace is initiated
+  - Modified gitpod.yml file that installs postgre whenever codespace is initiated
           
 ``` 
           - name: postgres
@@ -96,8 +100,8 @@ networks:
       sudo apt update
       sudo apt install -y postgresql-client-13 libpq-dev
 ```
-       - Added postgres docker in docker-compose.yml file
 
+- Added postgres docker in docker-compose.yml file
 ```
 services:
   db:
@@ -115,7 +119,7 @@ volumes:
     driver: local
 ```
 
-      - Dynamodb local is also added in docker-compose.yml file
+- Dynamodb local is also added in docker-compose.yml file
 ```
 services:
   dynamodb-local:
@@ -131,7 +135,8 @@ services:
       - "./docker/dynamodb:/home/dynamodblocal/data"
     working_dir: /home/dynamodblocal
 ```
-      - Volume mapping
+
+- Volume mapping
 ```
 volumes: 
   - db:/var/lib/postgresql/data
