@@ -145,3 +145,29 @@ volumes:
   db:
     driver: local
 ```
+
+# HomeWork Challenges:
+
+#### 1. Push and tag an image in DockerFile
+![image](https://user-images.githubusercontent.com/56792014/220115567-0b89d50b-fe34-4d98-a2dc-69834851b863.png)
+ - Pushed all the image in docker-compose.yml file.
+
+
+1. Re-tagged all existing local image docker tag <existing-image> <hub-user>/<repo-name>[:<tag>]
+i.e
+```
+docker tag 904626f640dc godstwilight/cloudbootcamp:dynamodb-latest
+
+```
+
+2. Pushed the newly tagged docker image to docker hub repo
+
+```
+docker push godstwilight/cloudbootcamp:dynamodb-latest
+```
+  
+3. Deleted the newly tagged docker image after pushing 
+
+```
+docker rmi godstwilight/cloudbootcamp:dynamodb-latest 
+```
