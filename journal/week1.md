@@ -270,3 +270,46 @@ docker ps -a
  Docker container is running successfully 
 ![image](https://user-images.githubusercontent.com/56792014/220352679-54a8424d-51f4-483a-ba05-beb6b7487bba.png)
 
+  
+#### 4. Installed docker on local laptop and run the containers inside the gitpod workspace
+    
+   - Install docker locally windows with [link](https://docs.docker.com/desktop/install/windows-install/)
+   - Executed these commands to pull the images from my public dockerhub
+    
+    ```
+    #frontend image
+    docker pull godstwilight/aws-bootcamp-cruddur-2023-frontend-react-js:latest
+
+    #backend image
+    docker pull godstwilight/aws-bootcamp-cruddur-2023-backend-flask:latest
+
+    #postgre image
+    docker pull godstwilight/cloudbootcamp:postgresql-latest
+
+    #dynamodb image
+    docker pull godstwilight/cloudbootcamp:dynamodb-latest
+
+    ```
+   - Create a container out of each image
+    
+    ```
+    #FRONTEND
+    docker run -p 3000:3000 -d <image id> 
+   
+    #BACKEND 
+    docker run --rm -p 4567:4567 -d <image id> 
+   
+    #DATABASE
+    docker run --rm -p 8000:8000 -d <dynamodb image id> 
+    docker run --rm -p 5432:5432 -d <postgre image id> 
+    docker ps -a
+    docker images
+    ```
+    ![image](https://user-images.githubusercontent.com/56792014/220367292-3c89a5b0-0429-40ea-b733-3aaf8f449972.png)
+    
+    DOCKER DESKTOP
+    ![image](https://user-images.githubusercontent.com/56792014/220367469-bdb8ceac-46a8-4b4c-a649-30f8b27cca94.png)
+   
+    Docker container running in localhost
+    ![image](https://user-images.githubusercontent.com/56792014/220367695-933e9f8d-d0d7-4495-8702-263da51f3ef0.png)
+
