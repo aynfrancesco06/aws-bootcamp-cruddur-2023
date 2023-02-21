@@ -171,3 +171,68 @@ docker push godstwilight/cloudbootcamp:dynamodb-latest
 ```
 docker rmi godstwilight/cloudbootcamp:dynamodb-latest 
 ```
+
+
+  
+#### 2. Run the dockerfile CMD as an external script
+
+Dockerfile with CMD
+```  
+FROM python:3.10-slim-buster
+WORKDIR /backend-flask
+
+COPY requirements.txt requirements.txt
+
+RUN pip3 install -r requirements.txt
+
+COPY . .
+
+ENV FLASK_ENV=development
+
+EXPOSE ${PORT}
+
+CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0", "--port=4567"]
+```
+  The CMD on this dockerfile should be ran by an external script. In order to do that, I used RUN and ENTRYPOINT.
+  RUN will add permissions on the script file before running the script file via ENTRYPOINT which allows me to run the script file as an executable
+
+DOCKERFILE with RUN and ENTRYPOINT to run the CMD as an external script
+```
+FROM python:3.10-slim-buster
+WORKDIR /backend-flask
+
+COPY requirements.txt requirements.txt
+
+RUN pip3 install -r requirements.txt
+
+COPY . .
+
+ENV FLASK_ENV=development
+
+EXPOSE ${PORT}
+
+RUN chmod a+x script_backend.sh
+
+ENTRYPOINT ["sh", "./script_backend.sh"] 
+```
+
+script_backend.sh
+  - #!/bin/sh will tell us what command interpreter will be used which in this case would be the .sh format ![ref](https://tldp.org/LDP/abs/html/sha-bang.html#MAGNUMREF)
+  - set -x would be used to see what commands would be printed out before executing the commands itself ![ref](https://www.gnu.org/software/bash/manual/html_node/The-Set-Builtin.html)
+  - python3 -m flask run --host=0.0.0.0 --port=4567 is the CMD exec itself in the previous dockerfile put into a script file to run
+```
+#!/bin/sh
+
+set -x
+
+python3 -m flask run --host=0.0.0.0 --port=4567
+```
+  After creating the script file, we will rebuild the dockerfile with  `docker build -t  backend-flask ./backend-flask`
+  Then run it with `docker container run --rm -p 4567:4567 -d backend-flask`
+  This procedure will also be executed with the dockerfile on  ./frontend-react-js
+  I've also done the liberty of pushing the updated images to my dockerhub repo for future usage `docker push godstwilight/aws-bootcamp-cruddur-2023-backend-flask:tagname` `docker push godstwilight/aws-bootcamp-cruddur-2023-frontend-react-js:tagname`
+  
+  I also done a `docker system prune` just to clean my containers and images
+  Then run the `docker compose up` to check if everything is working as is, to which it is.
+  ![image](https://user-images.githubusercontent.com/56792014/220344550-0556377b-4fe7-4abf-bc2d-c190eadd6d31.png)
+  ![image](https://user-images.githubusercontent.com/56792014/220344697-fd418b4c-acb6-43d7-866d-1a0cdba01e13.png)
