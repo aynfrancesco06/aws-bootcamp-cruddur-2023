@@ -239,3 +239,34 @@ python3 -m flask run --host=0.0.0.0 --port=4567
   ![image](https://user-images.githubusercontent.com/56792014/220344550-0556377b-4fe7-4abf-bc2d-c190eadd6d31.png)
   
   ![image](https://user-images.githubusercontent.com/56792014/220344697-fd418b4c-acb6-43d7-866d-1a0cdba01e13.png)
+  
+ #### 3. Launched an EC2 instance that has docker installed, and pull a container to demonstrate you can run your own docker processes.
+  
+  - Navigated to my non-root AWS admin account
+  - Created an EC2 instance
+  ![image](https://user-images.githubusercontent.com/56792014/220350881-724f93ac-a697-432c-bfd9-b08b648c1414.png)
+  - Connect inside the EC2 instance via SSH or connect via AWS Instance Connect, I've used the latter
+  - Wrote these set of commands in the terminal 
+
+```
+sudo apt-get update  
+apt-get -y install curl
+sudo apt-get docker.io
+sudo su
+docker pull godstwilight/aws-bootcamp-cruddur-2023-frontend-react-js:latest
+docker images
+docker run -p 3000:3000 -d <image id>
+docker ps -a 
+```
+  - `sudo apt-get update` to have  package cache in the image
+  - `sudo apt-get -y install curl` for connection troubleshooting just in case we run into connection issues
+  - `sudo apt-get docker.io` to install docker
+  - `sudo su` run as root, writing sudo every line is tedious for me :)
+  - `docker pull godstwilight/aws-bootcamp-cruddur-2023-frontend-react-js:latest` to pull the image from the public docker repo
+  - `docker images` check if image is in the EC2 instance
+  - `docker run -p 3000:3000 -d <image id>` run the image in a container
+  - `docker ps -a` check if container is running successfully
+
+ Docker container is running successfully 
+![image](https://user-images.githubusercontent.com/56792014/220352679-54a8424d-51f4-483a-ba05-beb6b7487bba.png)
+
