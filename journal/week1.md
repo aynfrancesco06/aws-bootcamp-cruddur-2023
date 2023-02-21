@@ -314,8 +314,8 @@ docker ps -a
     ![image](https://user-images.githubusercontent.com/56792014/220367695-933e9f8d-d0d7-4495-8702-263da51f3ef0.png)
 
 #### 5. Added an healthcheck in V3 docker compose file for the backend container
-    
-    - Inserted the code snippet below that periodically pings the server where curl errors will be treated as unhealthy [ref](https://docs.docker.com/compose/compose-file/compose-file-v3/)
+
+  -Inserted the code snippet below that periodically pings the server where curl errors will be treated as unhealthy [link](https://docs.docker.com/compose/compose-file/compose-file-v3/)
     
 ```
   healthcheck:
@@ -325,10 +325,11 @@ docker ps -a
   retries: 3
   start_period: 40s
 ```
-    - This will be inserted in the docker-compose.yml file
+  
+  -This will be inserted in the docker-compose.yml file
 ![image](https://user-images.githubusercontent.com/56792014/220393227-00b231aa-8c01-43d1-8d0c-42f0f17352e3.png)
   
-    - We also installed curl via run command in backend dockerfile, this will enable the curl command in the health status later
+  -We also installed curl via run command in backend dockerfile, this will enable the curl command in the health status later
 
 ```
 #install curl
@@ -337,16 +338,18 @@ curl
 ```
 ![image](https://user-images.githubusercontent.com/56792014/220393900-796e4877-42b3-459d-b05b-afe849393871.png)
 
-    - After setting this all up, rebuild the backend dockerfile with `docker build --pull --rm -f "backend-flask/dockerfile" -t backend-flask:latest "backend-flask" `
-    - Then run `docker compose build ` to rebuild the docker compose file
-    - After the rebuilds, I did `docker compose up` command (In this case I just upped the backend service to test the healthchecks)
+  -After setting this all up, rebuild the backend dockerfile with `docker build --pull --rm -f "backend-flask/dockerfile" -t backend-flask:latest "backend-flask" `
+    
+  -Then run `docker compose build ` to rebuild the docker compose file
+    
+  -After the rebuilds, I did `docker compose up` command (In this case I just upped the backend service to test the healthchecks)
 ![image](https://user-images.githubusercontent.com/56792014/220394732-205043d9-b80d-4dd3-a71b-76f4b7350443.png)
     
-    - You can check the healthcheck logs by using this command `docker inspect --format "{{json .State.Health }}" <container name> | jq `
+  -You can check the healthcheck logs by using this command `docker inspect --format "{{json .State.Health }}" <container name> | jq `
     
 ![image](https://user-images.githubusercontent.com/56792014/220395157-c4981176-9a54-453e-9c4b-f99f870bfcf1.png)
     
-    - 404 error is expected in the backend, but this also shows that the healthchecks are working.
+  -404 error is expected in the backend, but this also shows that the healthchecks are working.
     
 ![image](https://user-images.githubusercontent.com/56792014/220395517-37e1a650-19fb-43ca-a3d0-418eb6d0a6a7.png)
 
