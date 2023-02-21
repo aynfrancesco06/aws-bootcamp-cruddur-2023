@@ -29,6 +29,6 @@ EXPOSE ${PORT}
 # python3 -m flask run --host=0.0.0.0 --port=4567
 # CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0", "--port=4567"]
 
-RUN chmod u+x script_backend.sh
+RUN chmod a+x script_backend.sh
 
-ENTRYPOINT ["./script_backend.sh"]
+ENTRYPOINT ["sh", "./script_backend.sh"]
