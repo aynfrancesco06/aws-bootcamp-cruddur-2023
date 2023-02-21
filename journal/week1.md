@@ -331,7 +331,7 @@ docker ps -a
     - We also installed curl via run command in backend dockerfile, this will enable the curl command in the health status later
 
 ```
-# install curl
+#install curl
 RUN apt-get update && apt-get install -y \
 curl
 ```
@@ -339,16 +339,16 @@ curl
 
     - After setting this all up, rebuild the backend dockerfile with `docker build --pull --rm -f "backend-flask/dockerfile" -t backend-flask:latest "backend-flask" `
     - Then run `docker compose build ` to rebuild the docker compose file
-    - After the rebuilds, I did `docker compose up` command ( In this case I just upped the backend service to test the healthchecks )
-    ![image](https://user-images.githubusercontent.com/56792014/220394732-205043d9-b80d-4dd3-a71b-76f4b7350443.png)
+    - After the rebuilds, I did `docker compose up` command (In this case I just upped the backend service to test the healthchecks)
+![image](https://user-images.githubusercontent.com/56792014/220394732-205043d9-b80d-4dd3-a71b-76f4b7350443.png)
     
     - You can check the healthcheck logs by using this command `docker inspect --format "{{json .State.Health }}" <container name> | jq `
     
-    ![image](https://user-images.githubusercontent.com/56792014/220395157-c4981176-9a54-453e-9c4b-f99f870bfcf1.png)
+![image](https://user-images.githubusercontent.com/56792014/220395157-c4981176-9a54-453e-9c4b-f99f870bfcf1.png)
     
     - 404 error is expected in the backend, but this also shows that the healthchecks are working.
     
-    ![image](https://user-images.githubusercontent.com/56792014/220395517-37e1a650-19fb-43ca-a3d0-418eb6d0a6a7.png)
+![image](https://user-images.githubusercontent.com/56792014/220395517-37e1a650-19fb-43ca-a3d0-418eb6d0a6a7.png)
 
     
     
