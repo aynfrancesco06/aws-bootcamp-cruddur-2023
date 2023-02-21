@@ -2,15 +2,15 @@ FROM node:16.18
 
 ENV PORT=3000
 
-COPY . /frontend-react-js
 WORKDIR /frontend-react-js
+COPY . /frontend-react-js
 RUN npm install
 EXPOSE ${PORT}
 
 #CMD ["npm", "start"]
 
 # inside the container this will run the command indicated
-RUN chmod u+x script_frontend.sh
+RUN chmod a+x script_frontend.sh
 
 # this will set our external script as an executable evertime the container is run
-ENTRYPOINT ["./script_frontend.sh"]
+ENTRYPOINT ["sh", "./script_frontend.sh"]
