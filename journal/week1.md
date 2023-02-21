@@ -229,10 +229,13 @@ python3 -m flask run --host=0.0.0.0 --port=4567
 ```
   After creating the script file, we will rebuild the dockerfile with  `docker build -t  backend-flask ./backend-flask`
   Then run it with `docker container run --rm -p 4567:4567 -d backend-flask`
-  This procedure will also be executed with the dockerfile on  ./frontend-react-js
+  The ENTRYPOINT and RUN procedure will also be executed with the dockerfile on  ./frontend-react-js before running its docker build/run command. 
   I've also done the liberty of pushing the updated images to my dockerhub repo for future usage `docker push godstwilight/aws-bootcamp-cruddur-2023-backend-flask:tagname` `docker push godstwilight/aws-bootcamp-cruddur-2023-frontend-react-js:tagname`
   
   I also done a `docker system prune` just to clean my containers and images
+  
   Then run the `docker compose up` to check if everything is working as is, to which it is.
+  
   ![image](https://user-images.githubusercontent.com/56792014/220344550-0556377b-4fe7-4abf-bc2d-c190eadd6d31.png)
+  
   ![image](https://user-images.githubusercontent.com/56792014/220344697-fd418b4c-acb6-43d7-866d-1a0cdba01e13.png)
