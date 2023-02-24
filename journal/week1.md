@@ -1,10 +1,10 @@
 # Week 1 — App Containerization
 
 
-#### 1. Worked on half of the checklist
+### 1. Worked on half of the checklist
   ![image](https://user-images.githubusercontent.com/56792014/220051713-6a5c386e-ee6f-4acd-af9a-566762c8a9a5.png)
   
-#### 2. Worked on adding the notifications feature both on Frontend and Backend
+### 2. Worked on adding the notifications feature both on Frontend and Backend
 ![image](https://user-images.githubusercontent.com/56792014/220064570-be7187dd-3314-4eb7-b3f4-3d4fe167dc8f.png)
 
 - Created a file in backend-flask/DockerFile
@@ -58,7 +58,7 @@ docker build -t frontend-react-js ./frontend-react-js
 docker run -p 3000:3000 -d frontend-react-js
 ```        
 
-#### 3. Created docker compose file in /workspace/aws-bootcamp-cruddur-2023
+### 3. Created docker compose file in /workspace/aws-bootcamp-cruddur-2023
  ```
 version: "3.8"
 services:
@@ -89,7 +89,7 @@ networks:
 ```
 
 
-#### 4. Worked on adding databases in gitpod.yml and docker compose
+### 4. Worked on adding databases in gitpod.yml and docker compose
   - Modified gitpod.yml file that installs postgre whenever codespace is initiated
           
 ``` 
@@ -148,7 +148,7 @@ volumes:
 
 # HomeWork Challenges:
 
-#### 1. Push and tag an image in DockerFile
+### 1. Push and tag an image in DockerFile
 ![image](https://user-images.githubusercontent.com/56792014/220115567-0b89d50b-fe34-4d98-a2dc-69834851b863.png)
  - Pushed all the image in docker-compose.yml file.
 
@@ -174,7 +174,7 @@ docker rmi godstwilight/cloudbootcamp:dynamodb-latest
 
 
   
-#### 2. Run the dockerfile CMD as an external script
+### 2. Run the dockerfile CMD as an external script
 
 Dockerfile with CMD
 ```  
@@ -240,7 +240,7 @@ python3 -m flask run --host=0.0.0.0 --port=4567
   
   ![image](https://user-images.githubusercontent.com/56792014/220344697-fd418b4c-acb6-43d7-866d-1a0cdba01e13.png)
   
- #### 3. Launched an EC2 instance that has docker installed, and pull a container to demonstrate you can run your own docker processes.
+ ### 3. Launched an EC2 instance that has docker installed, and pull a container to demonstrate you can run your own docker processes.
   
   - Navigated to my non-root AWS admin account
   - Created an EC2 instance
@@ -271,7 +271,7 @@ docker ps -a
 ![image](https://user-images.githubusercontent.com/56792014/220352679-54a8424d-51f4-483a-ba05-beb6b7487bba.png)
 
   
-#### 4. Installed docker on local laptop and run the containers inside the gitpod workspace
+### 4. Installed docker on local laptop and run the containers inside the gitpod workspace
     
    - Install docker locally windows with [link](https://docs.docker.com/desktop/install/windows-install/)
    - Executed these commands to pull the images from my public dockerhub
@@ -313,7 +313,7 @@ docker ps -a
     Docker container running in localhost
     ![image](https://user-images.githubusercontent.com/56792014/220367695-933e9f8d-d0d7-4495-8702-263da51f3ef0.png)
 
-#### 5. Added an healthcheck in V3 docker compose file for the backend container
+### 5. Added an healthcheck in V3 docker compose file for the backend container
 
   - Inserted the code snippet below that periodically pings the server where curl errors will be treated as unhealthy [link](https://docs.docker.com/compose/compose-file/compose-file-v3/)
     
@@ -357,7 +357,7 @@ curl
 
     
     
-#### 6. Added an multi-stage build in the dockerfile for the frontend container
+### 6. Added an multi-stage build in the dockerfile for the frontend container
 
 ```
   # Stage 1: Build the Application
@@ -403,7 +403,9 @@ RUN chmod a+x script_frontend.sh
 ENTRYPOINT ["sh", "./script_frontend.sh"]
   
 ```
-    Screenshot below shows the difference with using multi-stage build vs non multi-stage build on the image size
+  
+- Screenshot below shows the difference with using multi-stage build vs non multi-stage build on the image size
+  
   ![image](https://user-images.githubusercontent.com/56792014/221200029-f712018d-f044-46fe-be54-0d6056fff047.png)
   ![image](https://user-images.githubusercontent.com/56792014/221200051-90a43495-facd-4254-b223-e8d5e4eeb11b.png)
   
@@ -412,6 +414,6 @@ ENTRYPOINT ["sh", "./script_frontend.sh"]
   
 
   
-#### 7. Applying Docker best practices
+### 7. Applying Docker best practices
   - Try to find the lightest image size for my dockerfiles that can still effectively run the image. I.E using node:16.18-alpine instead of node:16.18
   - Implementing healthchecks for monitoring container status
