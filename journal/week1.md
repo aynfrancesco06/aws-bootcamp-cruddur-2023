@@ -357,5 +357,61 @@ curl
 
     
     
+#### 6. Added an multi-stage build in the dockerfile for the frontend container
 
-    
+```
+  # Stage 1: Build the Application
+FROM node:16.18-alpine as build
+
+WORKDIR /frontend-react-js
+
+# Copy everything in current directory -> Put it inside the container's /frontend-react-js
+COPY . /frontend-react-js
+
+# Run npm install inside the container
+RUN npm install
+
+# Copy everthing from the current working directory -> paste inside the container's current working directory
+COPY . .
+
+# Run npm run build inside the container to compile the source code for the next stage of the process
+RUN npm run build
+
+
+
+# Stage 2: Running the Application
+FROM node:16.18-alpine
+
+ENV PORT=3000
+
+WORKDIR /frontend-react-js
+
+EXPOSE ${PORT}
+
+# copy the contents of /frontend-react-js/build from build and put it in the second stage of the process.
+COPY --from=build /frontend-react-js/build /frontend-react-js/build
+
+#CMD ["npm", "start"]
+
+# copy the startup script to the container
+COPY script_frontend.sh .
+
+# inside the container this will run the command indicated
+RUN chmod a+x script_frontend.sh
+
+# this will set our external script as an executable evertime the container is run
+ENTRYPOINT ["sh", "./script_frontend.sh"]
+  
+```
+    Screenshot below shows the difference with using multi-stage build vs non multi-stage build on the image size
+  ![image](https://user-images.githubusercontent.com/56792014/221200029-f712018d-f044-46fe-be54-0d6056fff047.png)
+  ![image](https://user-images.githubusercontent.com/56792014/221200051-90a43495-facd-4254-b223-e8d5e4eeb11b.png)
+  
+- From the original 1.15gb size of the image, we managed to downsize the image to 365.49mb while using the node-alpine image. And doing a multi-stage build further downsizes it to 119.6 mb which is roughly 100% percent less from the original size of the image
+
+  
+
+  
+#### 7. Applying Docker best practices
+  - Try to find the lightest image size for my dockerfiles that can still effectively run the image. I.E using node:16.18-alpine instead of node:16.18
+  - Implementing healthchecks for monitoring container status
