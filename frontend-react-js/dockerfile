@@ -1,13 +1,36 @@
-FROM node:16.18
+# Stage 1: Build the Application
+FROM node:16.18-alpine as build
+
+WORKDIR /frontend-react-js
+
+# Copy everything in current directory -> Put it inside the container's /frontend-react-js
+COPY . /frontend-react-js
+
+# Run npm install inside the container
+RUN npm install
+
+# Copy everthing from the current working directory -> paste inside the container's current working directory
+COPY . .
+
+# Run npm run build inside the container to compile the source code for the next stage of the process
+RUN npm run build
+
+# Stage 2: Running the Application
+FROM node:16.18-alpine
 
 ENV PORT=3000
 
 WORKDIR /frontend-react-js
-COPY . /frontend-react-js
-RUN npm install
+
 EXPOSE ${PORT}
 
+# copy the contents of /frontend-react-js/build from build and put it in the second stage of the process.
+COPY --from=build /frontend-react-js/build /frontend-react-js/build
+
 #CMD ["npm", "start"]
+
+# copy the startup script to the container
+COPY script_frontend.sh .
 
 # inside the container this will run the command indicated
 RUN chmod a+x script_frontend.sh
