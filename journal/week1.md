@@ -417,3 +417,57 @@ ENTRYPOINT ["sh", "./script_frontend.sh"]
 ### 7. Applying Docker best practices
   - Try to find the lightest image size for my dockerfiles that can still effectively run the image. I.E using node:16.18-alpine instead of node:16.18
   - Implementing healthchecks for monitoring container status
+
+  
+
+  
+  
+  
+### 8. Cloud Journey - Pick the right cloud role.
+   - My current outlook on my preferred cloud role.
+  
+  1. The role in cloud I'm aiming for currently is Cloud Engineer/DevOps Engineer
+
+* What skills do you have that could transfer to this role?
+	- I do have experience with Python Coding, our company encourages 
+	its employees to take AWS certs that has learning plans and I did take 2 AWS certs with it.
+	- I do have exposure to the general AWS services (EC2, CloudWatch, S3, DynamoDB, VPCs)
+	- I'm doing side projects that involves Docker and CI/CD pipelines with some AWS service integrations
+	 
+
+* Are you interested more in people, or in data?
+	- Both I'd say, my previous work needed me to be with other people
+	to collaborate on finishing tasks. This is where my soft skills are 
+	cultivated 
+
+* Do you like to work alone, or more in a team?
+	- I'd like working alone if the workload is sustainable,
+	- Working in a team is also not so bad since I can learn some stuff from them
+
+* What are the jobs available in your local area?
+	- Lots of DevOps and Cloud Engineer roles that are masked as Front-end/Full Stack
+	- I have to depend on the job descriptions to help me filter what fits my current stack
+
+
+2. I will be successful in this role because… I've loved the idea of doing something critically important and solving it.
+
+* What do you know about what this role does?* What does it take to be successful at this role?
+	- They're the one responsible for the infrastructure of the application
+	- They will be the one to have an overall understanding of the whole product and
+	what improvements should be made with it going forward
+
+* What about your current skills makes you a good fit for the role?
+	- Not yet, I may have the soft skills as of now. But my technical expertise is nowhere 
+	near on a level where I can provide value to the client/project 
+
+
+* Is this role a good fit given my level of experience?
+	- Not yet, I have exposure to other tech (SAP). But the DevOps stack is a different tech
+	that requires dedication on learning how to implement it
+
+* Are there sufficient jobs with this role profile in my area?
+	- Yes there are.
+
+3. - The FIVE skills I will learn are… Docker, AWS Services, CI/CD Pipelines (Github Actions), Terraform, Python
+
+4. - The skills I will NOT learn are… Other cloud providers (Azure/GCP), Machine learning/AI, Web Dev, Crypto
