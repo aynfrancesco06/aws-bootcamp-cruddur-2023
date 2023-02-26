@@ -15,6 +15,8 @@ COPY . .
 # Run npm run build inside the container to compile the source code for the next stage of the process
 RUN npm run build
 
+
+
 # Stage 2: Running the Application
 FROM node:16.18-alpine
 
