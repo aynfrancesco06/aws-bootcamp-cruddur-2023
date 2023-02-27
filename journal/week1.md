@@ -417,7 +417,7 @@ ENTRYPOINT ["sh", "./script_frontend.sh"]
 ### 7. Applying Docker best practices
   - Try to find the lightest image size for my dockerfiles that can still effectively run the image. I.E using node:16.18-alpine instead of node:16.18
   - Implementing healthchecks for monitoring container status
-
+  - Added healthcheck for the frontend container
   
 
   
