@@ -9,12 +9,14 @@ COPY . /frontend-react-js
 # Run npm install inside the container
 RUN npm install
 
+#install curl
+#RUN apk update && apk --no-cache add curl
+
 # Copy everthing from the current working directory -> paste inside the container's current working directory
 COPY . .
 
 # Run npm run build inside the container to compile the source code for the next stage of the process
 RUN npm run build
-
 
 
 # Stage 2: Running the Application
@@ -30,12 +32,12 @@ EXPOSE ${PORT}
 COPY --from=build /frontend-react-js/build /frontend-react-js/build
 
 #CMD ["npm", "start"]
-
+RUN apk update && apk --no-cache add curl
 # copy the startup script to the container
 COPY script_frontend.sh .
 
 # inside the container this will run the command indicated
 RUN chmod a+x script_frontend.sh
 
-# this will set our external script as an executable evertime the container is run
+# this will set our external script as an executable everytime the container is run
 ENTRYPOINT ["sh", "./script_frontend.sh"]
