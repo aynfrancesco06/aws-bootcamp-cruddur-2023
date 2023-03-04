@@ -11,7 +11,7 @@ class NotificationsActivities:
       span.set_attribute("app.notifnow", now.isoformat())
       results = [{
         'uuid': '68f126b0-1ceb-4a33-88be-d90fa7109eee',
-        'handle':  'Rome Dyadlift',
+        'handle':  'Andrew Brown',
         'message': 'Cloud is fun!',
         'created_at': (now - timedelta(days=2)).isoformat(),
         'expires_at': (now + timedelta(days=5)).isoformat(),
