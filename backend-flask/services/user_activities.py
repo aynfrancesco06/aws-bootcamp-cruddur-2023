@@ -3,14 +3,16 @@ from aws_xray_sdk.core import xray_recorder
 
 class UserActivities:
   def run(user_handle):
+    try:
     # AWS Xray
-     # segment = xray_recorder.begin_segment('user_activities')
+      segment = xray_recorder.begin_segment('user_activities')
       model = {
         'errors': None,
         'data': None
       }
 
       now = datetime.now(timezone.utc).astimezone()     
+
       if user_handle == None or len(user_handle) < 1:
         model['errors'] = ['blank_user_handle']
       else:
@@ -24,11 +26,15 @@ class UserActivities:
         }]
         model['data'] = results
       
-        #subsegment = xray_recorder.begin_subsegment('mock-data')
+      subsegment = xray_recorder.begin_subsegment('mock-data')
        # AWS Xray
-      #dict = {
-      #  "now": now.isoformat(),
-      #  "results-size": len(model['data'])
-      #  }
-      #segment.put_metadata('key', dict, 'namespace')
-      return model
+      dict = {
+        "now": now.isoformat(),
+        "results-size": len(model['data'])
+        }
+      segment.put_metadata('key', dict, 'namespace')
+      xray_recorder.end_subsegment()
+    finally:
+        #close the segment
+        xray_recorder.end_subsegment()
+    return model
