@@ -164,6 +164,14 @@ EPOCH=$(date +%s)
 aws xray get-service-graph --start-time $(($EPOCH-600)) --end-time $EPOCH
 ```
 
+Fixes are added for the AWS Xray subsegments
+
+![image](https://user-images.githubusercontent.com/56792014/222914498-33519a64-4fa2-4f23-9b11-ffbab30406e5.png)
+
+  - Mock data are now appearing in the Cloudwatch console
+
+
+
 ### 3. **Configure custom logger from Crudder App to send to CloudWatch Logs**
 
   - Add watchtower to requirements.txt file
