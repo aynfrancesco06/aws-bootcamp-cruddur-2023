@@ -17,19 +17,16 @@ export default function DesktopSidebar(props) {
   ]
 
   let trending;
+  let join;
+  let suggested;
+  
   if (props.user) {
     trending = <TrendingSection trendings={trendings} />
-  }
-
-  let suggested;
-  if (props.user) {
     suggested = <SuggestedUsersSection users={users} />
-  }
-  let join;
-  if (props.user) {
   } else {
     join = <JoinSection />
   }
+
 
   return (
     <section>
