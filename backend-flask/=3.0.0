@@ -1,0 +1,13 @@
+Collecting python-jose
+  Downloading python_jose-3.3.0-py2.py3-none-any.whl (33 kB)
+Collecting pyasn1
+  Downloading pyasn1-0.4.8-py2.py3-none-any.whl (77 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 77.1/77.1 kB 6.7 MB/s eta 0:00:00
+Collecting rsa
+  Downloading rsa-4.9-py3-none-any.whl (34 kB)
+Collecting ecdsa!=0.15
+  Downloading ecdsa-0.18.0-py2.py3-none-any.whl (142 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 142.9/142.9 kB 16.7 MB/s eta 0:00:00
+Requirement already satisfied: six>=1.9.0 in /home/gitpod/.pyenv/versions/3.8.16/lib/python3.8/site-packages (from ecdsa!=0.15->python-jose) (1.16.0)
+Installing collected packages: pyasn1, rsa, ecdsa, python-jose
+Successfully installed ecdsa-0.18.0 pyasn1-0.4.8 python-jose-3.3.0 rsa-4.9
