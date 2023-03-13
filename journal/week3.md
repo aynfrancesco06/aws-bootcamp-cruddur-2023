@@ -310,3 +310,8 @@ export default function SignupPage() {
 -Password reset is confirmed working.
 ![image](https://user-images.githubusercontent.com/56792014/224659846-57b2b524-d688-412a-b319-3354c7755234.png)
 
+
+
+### 6. Backend JWT token 
+
+![image](https://user-images.githubusercontent.com/56792014/224662311-6815662f-965c-41d2-abc3-ddc14d59c7dd.png)
