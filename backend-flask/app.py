@@ -54,12 +54,12 @@ from flask import got_request_exception
 
 
 # AWS X-RAY
-xray_url = os.getenv("AWS_XRAY_URL")
-xray_recorder.configure(service='backend-flask', dynamic_naming=xray_url)
+#xray_url = os.getenv("AWS_XRAY_URL")
+#xray_recorder.configure(service='backend-flask', dynamic_naming=xray_url)
 
 
 # Initialize tracing and an exporter that can send data to Honeycomb
-provider = TracerProvider()
+provider = TracerProvider() 
 processor = BatchSpanProcessor(OTLPSpanExporter())
 provider.add_span_processor(processor)
 
@@ -81,7 +81,7 @@ cognito_jwt_token = CognitoJwtToken(
 )
 
 # AWS X-RAY
-XRayMiddleware(app, xray_recorder)
+#XRayMiddleware(app, xray_recorder)
 
 
 # Initialize automatic instrumentation with Flask   //// HoneyComb
@@ -170,7 +170,7 @@ def data_notifications():
   return data, 200
 
 @app.route("/api/activities/home", methods=['GET'])
-@xray_recorder.capture('activities_home')
+#@xray_recorder.capture('activities_home')
 def data_home():
   access_token = extract_access_token(request.headers)
   try:
