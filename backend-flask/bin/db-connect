@@ -1,3 +1,12 @@
 #! /usr/bin/bash
 
-psql $CONNECTION_URL
+if [ "$1" = "prod" ]; then
+    echo " This is the production environment."
+    URL=$PROD_CONNECTION_URL
+else 
+    echo " This is not the production environment."
+    URL=$CONNECTION_URL
+fi
+
+
+psql $URL
