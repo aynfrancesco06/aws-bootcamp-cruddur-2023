@@ -44,10 +44,13 @@ class CreateActivity:
         'message': message
       }   
     else:
-      self.create_activity()
+      expires_at = (now + ttl_offset)
+
+      CreateActivity.create_activity(user_handle,message,expires_at)
+
       model['data'] = {
         'uuid': uuid.uuid4(),
-        'display_name': 'Andrew Brown',
+        'display_name': 'andrewbrown',
         'handle':  user_handle,
         'message': message,
         'created_at': now.isoformat(),
@@ -55,18 +58,11 @@ class CreateActivity:
       }
     return model
 
-  def create_activity(user_uuid,message,expires_at):
-    user_uuid=""
-    sql = """
-    INSERT INTO (
-      user_uuid
+  def create_activity(handle,message,expires_at):
+    sql = db.template('create_activity')
+    uuid = db.query_commit(sql,
+    { 'handle':handle,
+      'message':message,
+      'expires_at':expires_at}
     )
-    VALUES(
-      '{user_uuid}',
-      '{message}',
-      '{expires_at}'
-    )
-    """
-
-    query_commit(sql)
-   
+    return uuid

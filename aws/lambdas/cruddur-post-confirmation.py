@@ -6,6 +6,7 @@ def lambda_handler(event, context):
     user = event['request']['userAttributes']
     print('userAttributes')
     print(user)
+
     user_display_name = user['name']
     user_email        = user['email']
     user_cognito_id   = user['sub']
@@ -20,18 +21,20 @@ def lambda_handler(event, context):
             handle, 
             cognito_user_id
             ) 
-        VALUES(
-            '{user_display_name}',
-            '{user_email}',
-            '{user_cognito_id}',
-            '{user_handle}'
+        VALUES(%s,%s,%s,%s,
             )
         """ 
         print('-----SQL STATEMENT')
         print(sql)
         conn = psycopg2.connect(os.getenv('CONNECTION_URL'))
         cur = conn.cursor()
-        cur.execute(sql) #
+        params = [
+            user_display_name,
+            user_email,
+            user_cognito_id,
+            user_handle
+        ]
+        cur.execute(sql,*params) 
         conn.commit() 
 
     except (Exception, psycopg2.DatabaseError) as error:
