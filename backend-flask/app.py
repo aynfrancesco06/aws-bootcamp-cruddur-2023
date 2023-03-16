@@ -162,7 +162,7 @@ def data_create_message():
     return model['errors'], 422
   else:
     return model['data'], 200
-  return
+
 
 @app.route("/api/activities/notifications", methods=['GET'])
 def data_notifications():
@@ -205,7 +205,7 @@ def data_search():
     return model['errors'], 422
   else:
     return model['data'], 200
-  return
+ 
 
 @app.route("/api/activities", methods=['POST','OPTIONS'])
 @cross_origin()
@@ -218,7 +218,7 @@ def data_activities():
     return model['errors'], 422
   else:
     return model['data'], 200
-  return
+
 
 @app.route("/api/activities/<string:activity_uuid>", methods=['GET'])
 @xray_recorder.capture('activities_show')
@@ -236,7 +236,7 @@ def data_activities_reply(activity_uuid):
     return model['errors'], 422
   else:
     return model['data'], 200
-  return
+ 
 
 if __name__ == "__main__":
   app.run(debug=True)
