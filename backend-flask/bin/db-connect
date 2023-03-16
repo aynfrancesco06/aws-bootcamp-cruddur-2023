@@ -1,10 +1,9 @@
 #! /usr/bin/bash
 
 if [ "$1" = "prod" ]; then
-    echo " This is the production environment."
+    echo " Running in prod mode"
     URL=$PROD_CONNECTION_URL
 else 
-    echo " This is not the production environment."
     URL=$CONNECTION_URL
 fi
 

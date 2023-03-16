@@ -7,7 +7,7 @@ LABEL="db-sessions"
 printf "${CYAN}== ${LABEL}${NO_COLOR}\n"
 
 if [ "$1" = "prod" ]; then
-    echo " This is the production environment."
+    echo " Running in prod mode"
     URL=$PROD_CONNECTION_URL
 else 
     URL=$CONNECTION_URL
