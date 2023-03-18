@@ -393,3 +393,9 @@ User stored in production (AWS RDS) database after sign up.
 Result
 ![image](https://user-images.githubusercontent.com/56792014/226127790-a9f7e74b-5dda-4a69-9dba-96142d3697fe.png)
 
+Prod database content user
+![image](https://user-images.githubusercontent.com/56792014/226129760-b9131da7-25d2-4721-92e7-74cf97f9f962.png)
+
+Prod database content activities
+![image](https://user-images.githubusercontent.com/56792014/226129795-8f79dddb-563a-47c5-947e-ac543af1eba7.png)
+
