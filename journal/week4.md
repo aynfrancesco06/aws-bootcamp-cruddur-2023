@@ -355,7 +355,25 @@ In our services folder. Some files here will be modified to hook up the psycopg 
 **Result after adding the layer**
 ![image](https://user-images.githubusercontent.com/56792014/226124430-f16f7e7f-e8c4-4353-ac5a-059fcc476e39.png)
 
+
   
+- After finishing setting up our AWS Lambda, we have to create a lambda trigger for our AWS Cognito. This trigger will be for every sign-up done for our app.
+  - Navigate to our user-pool in AWS Cognito, then to 'User properties'. Find the Lambda trigger and click 'Add'. 
+  
+(Please note that Post-confirmation trigger will be used here, this is greyed out since the trigger is already created with this screenshot)
+![image](https://user-images.githubusercontent.com/56792014/226124645-506fe62c-082b-44e2-a36b-f7eb83c9d02e.png)
+
+Result should be like this.
+![image](https://user-images.githubusercontent.com/56792014/226124956-6b6411c5-7942-4126-868b-8d8262a48a4d.png)
+
+
+Deploying the lambda trigger and registering a user with our Signup page in Cruddur should yield results where the created user will be stored in our prod database. 
+Any errors generated from the lambda trigger can be inspected with in the cloudwatch logs for debugging.
+  
+User stored in production (AWS RDS) database after sign up.
+![image](https://user-images.githubusercontent.com/56792014/226125698-156676e3-7a42-4c2a-9876-47fba21b001e.png)
+
+
                                      
 
 ### 5. Create new activities with a database insert 
