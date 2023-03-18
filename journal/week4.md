@@ -319,5 +319,43 @@ In our services folder. Some files here will be modified to hook up the psycopg 
   
 
 ### 4. Create a Cognito Trigger that inserts user into database
+- Link AWS Cognito with AWS Lambda that will insert user into database.
+- We need to authorize the cognito_user_id with the actual user in database, so they know what the actual users are.
+![image](https://user-images.githubusercontent.com/56792014/226123587-c1e83a8d-4f9b-4f20-8c6c-e0e2d2c7e90e.png)
+
+                                     
+- Create a lambda function to house our code in AWS.
+![image](https://user-images.githubusercontent.com/56792014/226123810-bff25fbd-a024-4eda-9c54-53d78f9daebc.png)
+
+- Result should be like this.
+![image](https://user-images.githubusercontent.com/56792014/226123826-db544eea-38c1-43ab-acbb-dfb21a3563cb.png)
+
+                                     
+                                     
+- Create a lambda sub-folder in the aws folder. Create a file called **cruddur-post-confirmation.py** and put the code snippet indicated in the instructions to the file. 
+
+**cruddur-post-confirmation.py**
+![image](https://user-images.githubusercontent.com/56792014/226123614-57e98452-7de5-45ed-9019-173df515cf28.png)
+
+- Paste the code in the lambda function 
+![image](https://user-images.githubusercontent.com/56792014/226123908-c95aa1c1-258c-4219-8615-b75dc469afcd.png)
+
+- Don't also forget to set the ENV VARS in the lambda function. 
+  ![image](https://user-images.githubusercontent.com/56792014/226123960-0330071f-72d1-4ffd-b9a3-234286a3d352.png)
+
+- Set the CONNECTION_URL that points to the RDS instance endpoint with postgresql.
+![image](https://user-images.githubusercontent.com/56792014/226124020-83b93f37-1a0d-42d1-89f8-b09d26150fee.png)
+
+- We also need to add a layer in our lambda function to enable the psycopg library in our python code.
+- Use the specified layer for your python version and corresponding AWS region here [link](https://github.com/jetbridge/psycopg2-lambda-layer)
+
+**Adding a layer in our lambda function**
+![image](https://user-images.githubusercontent.com/56792014/226124403-ce83ea2a-2b7e-4f5b-a8ce-0aea023e4241.png)
+
+**Result after adding the layer**
+![image](https://user-images.githubusercontent.com/56792014/226124430-f16f7e7f-e8c4-4353-ac5a-059fcc476e39.png)
+
+  
+                                     
 
 ### 5. Create new activities with a database insert 
