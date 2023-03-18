@@ -366,9 +366,16 @@ In our services folder. Some files here will be modified to hook up the psycopg 
 Result should be like this.
 ![image](https://user-images.githubusercontent.com/56792014/226124956-6b6411c5-7942-4126-868b-8d8262a48a4d.png)
 
+- We will also add a VPC configuration to our AWS Lambda. We also has to modify our permissions a little bit to allow the creating of VPCs for our lambda.
 
+![image](https://user-images.githubusercontent.com/56792014/226125870-3a191889-4a07-48d6-81c1-fd77cc7d5588.png)
+
+  
+  
 Deploying the lambda trigger and registering a user with our Signup page in Cruddur should yield results where the created user will be stored in our prod database. 
 Any errors generated from the lambda trigger can be inspected with in the cloudwatch logs for debugging.
+
+
   
 User stored in production (AWS RDS) database after sign up.
 ![image](https://user-images.githubusercontent.com/56792014/226125698-156676e3-7a42-4c2a-9876-47fba21b001e.png)
