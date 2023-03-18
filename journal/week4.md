@@ -384,3 +384,12 @@ User stored in production (AWS RDS) database after sign up.
                                      
 
 ### 5. Create new activities with a database insert 
+
+- The purpose for this section is determining how to create a tweet inside our app that is persistently stored in our Cruddur database in AWS RDS.
+- The create_activity.py file will be modified to be hooked with our postgresql.
+- Lots of refactoring will be present in the code changes to make it more readable.
+- End result should be that we should be able to create tweets and it persists in the user.
+
+Result
+![image](https://user-images.githubusercontent.com/56792014/226127790-a9f7e74b-5dda-4a69-9dba-96142d3697fe.png)
+
