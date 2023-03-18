@@ -297,6 +297,19 @@ After setting this up, end result will be able to create/recreate the local data
   
 ### 3. Installed Postgres driver in Backend App
 
+- Postgres driver's purpose is a means to connect to postgres. In this case we will use psycopg as our Flask backend is made with python and our backend will be constantly be communicating with our Postgre.
+
+- We will add these 2 inside the requirements.txt file
+    psycopg[binary]
+    psycopg[pool]
+
+- Then run this command to install these packages
+pip install -r requirements.txt
+  
+  
+  
+                                     
+                                     
 ### 4. Connected Gitpod IP to RDS Instance
 
 ### 5. Create a Cognito Trigger that inserts user into database
