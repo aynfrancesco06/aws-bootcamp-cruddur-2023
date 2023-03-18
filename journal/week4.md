@@ -47,7 +47,7 @@ If the RDS instance is not being used. We can temporarily stop the instance to a
 - We will run the docker compose file and verify that postgre is running on docker properly.
 
 
-### 2. Create bash scripts for easier DB deployment (either prod or local)
+### 2. Create bash scripts for easier DB deployment (either prod or local) and deploy GITPOD_IP to RDS instance
 
 - In the backend flask, we've created a bin folder that will contain all the bash scripts that we will be using for our database actions.
 - We will also create a schema.sql where we will load/unload the database. This is created in a folder called db inside the backend-flask folder.
@@ -305,13 +305,19 @@ After setting this up, end result will be able to create/recreate the local data
 
 - Then run this command to install these packages
 pip install -r requirements.txt
-  
-  
-  
-                                     
-                                     
-### 4. Connected Gitpod IP to RDS Instance
 
-### 5. Create a Cognito Trigger that inserts user into database
+We will create a file called db.py inside the lib folder.
+We will also create a $CONNECTION_URL env vars and put it in the docker-compose.yaml file.
+In our services folder. Some files here will be modified to hook up the psycopg code snippets.
+  home_activities.py will be modified as of now.
 
-### 6. Create new activities with a database insert 
+![image](https://user-images.githubusercontent.com/56792014/226123248-bbae75bb-8b45-43a2-b76b-edb9d760da69.png)
+
+
+                                     
+  
+  
+
+### 4. Create a Cognito Trigger that inserts user into database
+
+### 5. Create new activities with a database insert 
