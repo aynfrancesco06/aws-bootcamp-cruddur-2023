@@ -3,7 +3,6 @@ import os
 import re
 import sys
 from flask import current_app as app
-from flask_cors import CORS, cross_origin
 
 class Db:
   def __init__(self):
@@ -36,17 +35,17 @@ class Db:
       print(key, ":", value)
 
 
-  def print_sql(self,title,sql):
+  def print_sql(self,title,sql,params={}):
     cyan = '\033[96m'
     no_color = '\033[0m'
     print(f'{cyan}SQL STATEMENT - [{title}] -------{no_color}')
-    print(sql)
+    print(sql,params)
 
 
   # function is used when we want to commit data such as an insert
   # check for RETURNING in all upper cases
   def query_commit(self,sql,params={}):
-    self.print_sql('commit with returning',sql)
+    self.print_sql('commit with returning',sql,params)
 
     pattern = r"\bRETURNING\b"
     is_returning_id = re.search(pattern, sql)
@@ -67,25 +66,24 @@ class Db:
 
    # return a array of json objects
   def query_array_json(self,sql,params={}):
-    self.print_sql('array', sql)
+    self.print_sql('array', sql,params)
     print("SQL [array]-------")
     print(sql + "\n")
     print("")
+
     wrapped_sql = self.query_wrap_array(sql)
     with self.pool.connection() as conn:
       with conn.cursor() as cur:
-        cur.execute(wrapped_sql)
+        cur.execute(wrapped_sql,params)
         json = cur.fetchone()
         return json[0]
 
   
   # return a json object
   def query_object_json(self,sql,params={}):
-    self.print_sql('json', sql)
+    self.print_sql('json', sql,params)
     self.print_params(params)
     wrapped_sql = self.query_wrap_object(sql)
-
-
     with self.pool.connection() as conn:
       with conn.cursor() as cur:
         cur.execute(wrapped_sql,params)
@@ -95,6 +93,15 @@ class Db:
         else:
           return json[0]
 
+# when we want to return a single json object
+  def query_value(self,sql,params={}):
+    self.print_sql('value',sql,params)
+    with self.pool.connection() as conn:
+      with conn.cursor() as cur:
+        cur.execute(sql,params)
+        json = cur.fetchone()
+        return json[0]
+
 
   def query_wrap_object(self,template):
     sql = f"""
@@ -102,7 +109,7 @@ class Db:
     {template}
     ) object_row);
     """
-    return sql
+    return sql  
 
   def query_wrap_array(self,template):
     sql = f"""
@@ -125,8 +132,7 @@ class Db:
     print ("psycopg2 traceback:", traceback, "-- type:", err_type)
 
     # psycopg2 extensions.Diagnostics object attribute
-    #print ("\nextensions.Diagnostics:", err.diag)
-
+    # print ("\nextensions.Diagnostics:", err.diag)
     # print the pgcode and pgerror exceptions
     print ("pgerror:", err.pgerror)
     print ("pgcode:", err.pgcode, "\n")
