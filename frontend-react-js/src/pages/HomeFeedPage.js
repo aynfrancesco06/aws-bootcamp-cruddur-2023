@@ -11,7 +11,7 @@ import ReplyForm from '../components/ReplyForm';
 
 
 // [TODO] Authenication
-import Cookies from 'js-cookie'
+//import Cookies from 'js-cookie'
 
 export default function HomeFeedPage() {
   const [activities, setActivities] = React.useState([]);
@@ -26,7 +26,10 @@ export default function HomeFeedPage() {
     try {
       const backend_url = `${process.env.REACT_APP_BACKEND_URL}/api/activities/home`
       const res = await fetch(backend_url, {
-        method: "GET"
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`
+        },
+        method: "GET" 
       });
       let resJson = await res.json();
       if (res.status === 200) {

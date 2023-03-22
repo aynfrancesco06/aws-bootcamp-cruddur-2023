@@ -1,0 +1,41 @@
+#!/usr/bin/env python3
+
+import boto3
+import os
+import json
+
+
+# This script will grab the attributes of users in the AWS COGNITO USER POOL indicated in the userpool_id
+# Code snippet from https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/cognito-idp/client/list_users.html
+
+
+userpool_id = os.getenv("AWS_COGNITO_USER_POOL_ID")
+client = boto3.client('cognito-idp')
+
+params = {
+  'UserPoolId': userpool_id,
+  'AttributesToGet': [
+      'preferred_username',
+      'sub'
+  ]
+}
+response = client.list_users(**params)
+print('------ response')
+print(response)
+
+users = response['Users']
+
+print('------ users')
+print(users)
+
+print(json.dumps(users, sort_keys=True, indent=2, default=str))
+
+dict_users = {}
+for user in users:
+  attrs = user['Attributes']
+  sub    = next((a for a in attrs if a["Name"] == 'sub'), None)
+  handle = next((a for a in attrs if a["Name"] == 'preferred_username'), None)
+  dict_users[handle['Value']] = sub['Value']
+
+# json.dumps arrange the data in a more readable format and grabs the key data which is 'sub' and 'preferred_username' for listing our users
+print(json.dumps(dict_users, sort_keys=True, indent=2, default=str))
