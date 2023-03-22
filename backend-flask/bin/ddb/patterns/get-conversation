@@ -3,7 +3,8 @@
 import boto3
 import sys
 import json
-import datetime
+import os
+from datetime import datetime, timedelta, timezone
 
 attrs = {
   'endpoint_url': 'http://localhost:8000'
@@ -19,7 +20,7 @@ table_name = 'cruddur-messages'
 message_group_uuid = "5ae290ed-55d1-47a0-bc6d-fe2bc2700399"
 
 # define the query parameters
-current_year = datetime.datetime.now().year
+current_year = str(datetime.now().year)
 query_params = {
   'TableName': table_name,
   'ScanIndexForward': False,
@@ -28,7 +29,7 @@ query_params = {
   'KeyConditionExpression': 'pk = :pk AND begins_with(sk,:year)',
   #'KeyConditionExpression': 'pk = :pk AND sk BETWEEN :start_date AND :end_date',
   'ExpressionAttributeValues': {
-    ':year': {'S': '2023'},
+    ':year': {'S': (current_year)},
     #":start_date": { "S": "2023-03-01T00:00:00.000000+00:00" },
     #":end_date": { "S": "2023-03-19T23:59:59.999999+00:00" },
     ':pk': {'S': f"MSG#{message_group_uuid}"}
