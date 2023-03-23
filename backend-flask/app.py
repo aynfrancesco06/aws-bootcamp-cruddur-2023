@@ -169,7 +169,6 @@ def data_messages(message_group_uuid):
     else:
       return model['data'], 200
 
-
   except TokenVerifyError as e:
       # unauthenticated request
       app.logger.debug(e)
@@ -179,15 +178,16 @@ def data_messages(message_group_uuid):
 @app.route("/api/messages", methods=['POST','OPTIONS'])
 @cross_origin()
 def data_create_message():
-  user_receiver_handle = request.json.get('user_receiver_handle',None)
-  message_group_uuid = request.json.get('message_group_uuid',None)
-  message = request.json['message']
   access_token = extract_access_token(request.headers)
   try:
     claims = cognito_jwt_token.verify(access_token)
     app.logger.debug('token is authenticated')
+    app.logger.debug(claims)
     cognito_user_id = claims['sub']
+    message = request.json['message']
     
+    user_receiver_handle = request.json.get('user_receiver_handle',None)
+    message_group_uuid = request.json.get('message_group_uuid',None)
     
     if message_group_uuid == None:
       # Create for the first time

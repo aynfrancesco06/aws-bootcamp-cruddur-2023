@@ -31,7 +31,7 @@ class CreateMessage:
     if model['errors']:
       # return what we provided
       model['data'] = {
-        'display_name': 'Andrew Brown',
+        'display_name': 'andrew brown',
         'handle':  user_sender_handle,
         'message': message
       }
@@ -51,9 +51,9 @@ class CreateMessage:
       my_user    = next((item for item in users if item["kind"] == 'sender'), None)
       other_user = next((item for item in users if item["kind"] == 'recv')  , None)
 
-      print("USERS=[my-user]==")
+      print("USERS=[my-user]=========")
       print(my_user)
-      print("USERS=[other-user]==")
+      print("USERS=[other-user]======")
       print(other_user)
 
       ddb = Ddb.client()
