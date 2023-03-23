@@ -135,7 +135,7 @@ def data_message_groups():
   access_token = extract_access_token(request.headers)
   try:
       claims = cognito_jwt_token.verify(access_token)
-      # authenticated reqest
+      # authenticated request
       app.logger.debug('token is authenticated')
       cognito_user_id = claims['sub']
       model = MessageGroups.run(
@@ -179,15 +179,15 @@ def data_messages(message_group_uuid):
 @cross_origin()
 def data_create_message():
   access_token = extract_access_token(request.headers)
+  user_receiver_handle = request.json.get('handle',None)
+  message_group_uuid = request.json.get('message_group_uuid',None)
+    
   try:
     claims = cognito_jwt_token.verify(access_token)
     app.logger.debug('token is authenticated')
     app.logger.debug(claims)
     cognito_user_id = claims['sub']
     message = request.json['message']
-    
-    user_receiver_handle = request.json.get('user_receiver_handle',None)
-    message_group_uuid = request.json.get('message_group_uuid',None)
     
     if message_group_uuid == None:
       # Create for the first time
@@ -289,7 +289,7 @@ def data_activities_reply(activity_uuid):
     return model['errors'], 422
   else:
     return model['data'], 200
-  return
+  return model
 
 @app.route("/api/users/@<string:handle>/short", methods=['GET'])
 def data_users_short(handle):

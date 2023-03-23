@@ -46,11 +46,11 @@ class CreateMessage:
         'cognito_user_id': cognito_user_id,
         'user_receiver_handle': rev_handle
       })
-      print("USERS =-=-=-=-==")
-
+      
       my_user    = next((item for item in users if item["kind"] == 'sender'), None)
       other_user = next((item for item in users if item["kind"] == 'recv')  , None)
 
+      print("USERS =-=-=-=-==")
       print("USERS=[my-user]=========")
       print(my_user)
       print("USERS=[other-user]======")
@@ -78,6 +78,5 @@ class CreateMessage:
           other_user_display_name=other_user['display_name'],
           other_user_handle=other_user['handle']
         )
-      #MomentoCounter.incr(f"msgs/{user_handle}")
       model['data'] = data
       return model

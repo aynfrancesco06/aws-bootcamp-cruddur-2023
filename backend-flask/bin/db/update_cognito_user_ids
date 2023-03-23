@@ -13,6 +13,7 @@ sys.path.append(parent_path)
 from lib.db import db
 
 # this will update the cognito user id within our RDS database
+
 def update_users_with_cognito_user_id(handle,sub):
   sql = """
     UPDATE public.users
@@ -26,6 +27,7 @@ def update_users_with_cognito_user_id(handle,sub):
   })
 
 #this is the same as list_users script functionality which pulls the necessary data from the list of users
+
 def get_cognito_user_ids():
   userpool_id = os.getenv("AWS_COGNITO_USER_POOL_ID")
   client = boto3.client('cognito-idp')
@@ -48,6 +50,7 @@ def get_cognito_user_ids():
 
 
 # this will iterate through data pulled from get_cognito_user_ids function and update the handle and sub attributes
+
 users = get_cognito_user_ids()
 
 for handle, sub in users.items():

@@ -34,6 +34,8 @@ class Ddb:
     # query the table
     response = client.query(**query_params)
     items = response['Items']
+    
+    print('items:', items)
 
     results = []
     for item in items:
@@ -106,7 +108,7 @@ class Ddb:
     # print the response
     print('----------this is the ddb response')
     print(response)
-
+    print(record)
     return {
       'message_group_uuid': message_group_uuid,
       'uuid': my_user_uuid,

@@ -14,6 +14,8 @@ class Messages:
       'cognito_user_id': cognito_user_id
       })
 
+    print(f"UUID: {my_user_uuid}")  
+
     # TODO: we're suppose to check that we have permission to access
     # this message_group_uuid, its missing in our access pattern.
 
