@@ -536,6 +536,7 @@ for item in items:
   print(f'{sender_handle: <12}{formatted_datetime: <22}{message[:40]}...')
 ```
 
+
 list-conversation
 ```
 #!/usr/bin/env python3
@@ -612,53 +613,715 @@ print(json.dumps(response, sort_keys=True, indent=2))
 ### 5. Implement Update Cognito ID Script for Postgres Database	
 
 ##### Context:
-  - Create a new python script called update_cognito_users_id inside the db folder. This will
+  - We will be creating a new script that will update our database with the cognito user ids pulled from the **list-users.py** script. This will be called **update_cognito_users_id**
+  - 
 
 
 ##### Steps:
+  - Create a python file called **update_cognito_users_id** this will pull the user id from the list-users code and update the cognito_user_id in our db
+
+```
+#!/usr/bin/env python3
+
+import boto3
+import os
+import sys
+
+print("-- db-update-cognito-user-ids")
+
+# due to the file structure of other scripts and folder locations, we will be needing to utilize the current_path and parent_path variables
+current_path = os.path.dirname(os.path.abspath(__file__))
+parent_path = os.path.abspath(os.path.join(current_path, '..', '..')) 
+sys.path.append(parent_path)
+from lib.db import db
+
+# this will update the cognito user id within our RDS database
+
+def update_users_with_cognito_user_id(handle,sub):
+  sql = """
+    UPDATE public.users
+    SET cognito_user_id = %(sub)s
+    WHERE
+      users.handle = %(handle)s;
+  """
+  db.query_commit(sql,{
+    'handle' : handle,
+    'sub' : sub
+  })
+
+#this is the same as list_users script functionality which pulls the necessary data from the list of users
+
+def get_cognito_user_ids():
+  userpool_id = os.getenv("AWS_COGNITO_USER_POOL_ID")
+  client = boto3.client('cognito-idp')
+  params = {
+    'UserPoolId': userpool_id,
+    'AttributesToGet': [
+        'preferred_username',
+        'sub'
+    ]
+  }
+  response = client.list_users(**params)
+  users = response['Users']
+  dict_users = {}
+  for user in users:
+    attrs = user['Attributes']
+    sub    = next((a for a in attrs if a["Name"] == 'sub'), None)
+    handle = next((a for a in attrs if a["Name"] == 'preferred_username'), None)
+    dict_users[handle['Value']] = sub['Value']
+  return dict_users
+
+
+# this will iterate through data pulled from get_cognito_user_ids function and update the handle and sub attributes
+
+users = get_cognito_user_ids()
+
+for handle, sub in users.items():
+  print('----',handle,sub)
+  update_users_with_cognito_user_id(
+    handle=handle,
+    sub=sub
+  )
+```
+
+  - End result should have an output like this.
+![image](https://user-images.githubusercontent.com/56792014/227725485-64607fb9-56f2-4da3-a08f-38d1c3fe6e13.png)
+
+
 
 ### 6. Implement (Pattern A) Listing Messages in Message Group into Application	
 
 ##### Context:
-  - We will use a schema-load python script that will create a table inside our existing AWS RDS.
+  - We will modify and add various code changes to code base where the artificial conversation in our schema will be rendered by our cruddur app. 
+  - Result should be like this
+![image](https://user-images.githubusercontent.com/56792014/227724096-d15905d1-afc1-47cb-9fdf-4be4220bbb75.png)
 
 
 ##### Steps:
+  - We will add a ddb.py file inside our lib folder. The contents of the ddb.py will be from the week-5 branch.
+  - Add this function called **list_message_groups** in the ddb.py file.
+
+```
+ def list_message_groups(client,my_user_uuid):
+    table_name = 'cruddur-messages'
+    current_year = datetime.now().year
+    query_params = {
+      'TableName': table_name,
+      'KeyConditionExpression': 'pk = :pk AND begins_with(sk,:year)',
+      'ScanIndexForward': False,
+      'Limit': 20,
+      'ExpressionAttributeValues': {
+        ':year': {'S': str(current_year) },
+        ':pk': {'S': f"GRP#{my_user_uuid}"}
+      }
+    }
+    print('query-params:', query_params)
+    print(query_params)
+
+    # query the table
+    response = client.query(**query_params)
+    items = response['Items']
+    
+    print('items:', items)
+
+    results = []
+    for item in items:
+      last_sent_at = item['sk']['S']
+      results.append({
+        'uuid': item['message_group_uuid']['S'],
+        'display_name': item['user_display_name']['S'],
+        'handle': item['user_handle']['S'],
+        'message': item['message']['S'],
+        'created_at': last_sent_at
+      })
+    return results
+```
+
+  - We will create new folder called **cognito** in the bin folder. Inside the cognito folder we'll create a list-users python script.
+  - This list-users.py script will allows us to get the user id of the users in our cognito pool that we will be using later.
+  - We need to add a new variable in our docker-compose file in the backend-flask called $AWS_COGNITO_USER_POOL_ID in order for the script to work.
+
+list-users.py
+```
+#!/usr/bin/env python3
+
+import boto3
+import os
+import json
+
+
+# This script will grab the attributes of users in the AWS COGNITO USER POOL indicated in the userpool_id
+# Code snippet from https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/cognito-idp/client/list_users.html
+
+
+userpool_id = os.getenv("AWS_COGNITO_USER_POOL_ID")
+client = boto3.client('cognito-idp')
+
+params = {
+  'UserPoolId': userpool_id,
+  'AttributesToGet': [
+      'preferred_username',
+      'sub'
+  ]
+}
+response = client.list_users(**params)
+print('------ response')
+print(response)
+
+users = response['Users']
+
+print('------ users')
+print(users)
+
+print(json.dumps(users, sort_keys=True, indent=2, default=str))
+
+dict_users = {}
+for user in users:
+  attrs = user['Attributes']
+  sub    = next((a for a in attrs if a["Name"] == 'sub'), None)
+  handle = next((a for a in attrs if a["Name"] == 'preferred_username'), None)
+  dict_users[handle['Value']] = sub['Value']
+
+# json.dumps arrange the data in a more readable format and grabs the key data which is 'sub' and 'preferred_username' for listing our users
+print(json.dumps(dict_users, sort_keys=True, indent=2, default=str))
+```
+
+ 
+  - Navigate to app.py and go to **data_message_groups** function. This will be modified into the code below. Users are not hard coded but instead pulled from our database .
+
+```
+@app.route("/api/message_groups", methods=['GET'])
+def data_message_groups():
+  access_token = extract_access_token(request.headers)
+  try:
+      claims = cognito_jwt_token.verify(access_token)
+      # authenticated request
+      app.logger.debug('token is authenticated')
+      cognito_user_id = claims['sub']
+      model = MessageGroups.run(
+        cognito_user_id=cognito_user_id
+        )
+      if model['errors'] is not None:
+        return model['errors'], 422
+      else:
+        return model['data'], 200
+ 
+
+  except TokenVerifyError as e:
+       # unauthenticated request
+      app.logger.debug(e)
+      return {}, 401 # data = HomeActivities.run(logger=LOGGER) 
+```
+
+  - Navigate to **message_groups.py** in the services folder in backend-flask
+
+message_groups.py
+```
+from datetime import datetime, timedelta, timezone
+
+from lib.ddb import Ddb # importing ddb to find the handle from the uuid
+from lib.db import db
+
+class MessageGroups:
+  def run(cognito_user_id):
+    model = {
+      'errors': None,
+      'data': None
+    }
+
+    sql = db.template('users','uuid_from_cognito_user_id')
+    my_user_uuid = db.query_value(sql,{
+      'cognito_user_id': cognito_user_id
+      })
+
+    print(f"UUID:{my_user_uuid}")
+
+
+    ddb = Ddb.client()
+    data = Ddb.list_message_groups(ddb, my_user_uuid)
+    print("list_message_groups:",data)
+    model['data'] = data
+    return model
+
+```
+  - We are importing ddb to find the handle from the 'uuid_from_handle'
+
+![image](https://user-images.githubusercontent.com/56792014/227725868-be860133-c9e2-4ae2-8de1-e1b194d55ead.png)
+
+  - Create a new folder under the **sql** folder called users. Create a sql file called **uuid_from_cognito_user_id**
+  - This sql file will pull the uuid and store it in the sql variable.
+
+uuid_from_cognito_user_id
+```
+SELECT 
+    users.uuid
+FROM public.users
+WHERE
+    users.cognito_user_id=%(cognito_user_id)s
+LIMIT 1
+```
+
+  - We will also navigate to **MessageGroupsPage.js** and **MessageGroupPage.js** and add a Auth headers to our **loadData** and **loadMessageGroupData**,**loadMessageGroupsData** variable respectively.
+```
+ headers: {
+          'Authorization': `Bearer ${localStorage.getItem("access_token")}`
+```
+
+  - MessageForm.js will also be modified to add the Auth Header indicated above.
+![image](https://user-images.githubusercontent.com/56792014/227726410-a803e3b0-6d92-43bb-83e4-bd1c341ed47a.png)
+
+  - We will also create a file called checkAuth.js for reusability. This will be contained in the ./frontend-react-js/src/lib/checkAuth
+  - After creating the folder and the file. Copy the checkAuth function from the HomeFeedPage.js
+  
+```
+import { Auth } from 'aws-amplify';
+
+// check if we are authenticated
+const checkAuth = async (setUser) => {
+    Auth.currentAuthenticatedUser({
+      // Optional, By default is false. 
+      // If set to true, this call will send a 
+      // request to Cognito to get the latest user data
+      bypassCache: false 
+    })
+    .then((user) => {
+      console.log('user',user);
+      return Auth.currentAuthenticatedUser()
+    }).then((cognito_user) => {
+        setUser({
+          display_name: cognito_user.attributes.name,
+          handle: cognito_user.attributes.preferred_username
+        })
+    })
+    .catch((err) => console.log(err));
+  };
+
+export default checkAuth;
+```
+
+  - This function will be currently be exported to **HomeFeedPage.js MessageGroupPage.js MessageGroupsPage.js** and any other files that will be using checkAuth function.
+
+  - Add a $AWS_ENDPOINT_URL in our docker-compose file and point it to our local dynamodb **http://dynamodb-local:8000**
+![image](https://user-images.githubusercontent.com/56792014/227726973-214255de-7939-402c-9921-ec97f481b77c.png)
+
+  - End result should look like this
+![image](https://user-images.githubusercontent.com/56792014/227727000-150938af-638e-4150-be7e-44c1e3ee0167.png)
+
 
 ### 7. Implement (Pattern B) Listing Messages Group into Application	
 
 ##### Context:
-  - We will use a schema-load python script that will create a table inside our existing AWS RDS.
+
+  - We need to pass a message_group_uuid for each conversation created in the messages section as to uniquely identify the conversations.
 
 
 ##### Steps:
+  - Modify the path section of MessageGroupPage in app.js
+  - ![image](https://user-images.githubusercontent.com/56792014/227727165-18858c14-818d-40ee-92ee-cd723f4f95dc.png)
+  
+  - MessageGroupPage.js backend_url variable will also be modified to pull from the **params.message_group_uuid**
+  ![image](https://user-images.githubusercontent.com/56792014/227727246-0dedcad4-39f5-40fd-9a77-b7c7238e49b7.png)
 
-### 8. Implement (Pattern B) Listing Messages Group into Application	
+  - Navigate to MessageGroupItem.js and we will add modifications to the **classes** function and to the classes html link.
+![image](https://user-images.githubusercontent.com/56792014/227727922-c5fcbeb1-3b97-4d89-a7ab-5d0d00692904.png)
+
+  - End result should show the message_group_uuid displaying in the link
+  ![image](https://user-images.githubusercontent.com/56792014/227728012-3db6695a-3cc3-435a-9829-7239a00b481f.png)
+
+
+
+### 8. Implement (Pattern C) Creating a Message for an existing Message Group into Application	
 
 ##### Context:
-  - We will use a schema-load python script that will create a table inside our existing AWS RDS.
+  - We need to hook up other parts of our application that makes up the creation of messages and rendering of messages from our database into the application
 
 
 ##### Steps:
+  
+  - Modify the /api/messages/@<string:handle> app.route into the code below.
 
-### 9. Implement (Pattern C) Creating a Message for an existing Message Group into Application	
+app.py
+```
+@app.route("/api/messages/<string:message_group_uuid>", methods=['GET'])
+def data_messages(message_group_uuid): 
+  access_token = extract_access_token(request.headers)
+  try:
+    claims = cognito_jwt_token.verify(access_token)
+    app.logger.debug('token is authenticated')
+    cognito_user_id = claims['sub']
+    model = Messages.run(
+      cognito_user_id=cognito_user_id,
+      message_group_uuid=message_group_uuid
+    )
+    if model['errors'] is not None:
+      return model['errors'], 422
+    else:
+      return model['data'], 200
+
+  except TokenVerifyError as e:
+      # unauthenticated request
+      app.logger.debug(e)
+      return {}, 401
+```
+
+  - Navigate to messages.py and add the code modifications from week-5 branch 
+  
+messages.py
+```
+from datetime import datetime, timedelta, timezone
+from lib.ddb import Ddb
+from lib.db import db
+
+class Messages:
+  def run(message_group_uuid,cognito_user_id):
+    model = {
+      'errors': None,
+      'data': None
+    }
+
+    sql = db.template('users','uuid_from_cognito_user_id')
+    my_user_uuid = db.query_value(sql,{
+      'cognito_user_id': cognito_user_id
+      })
+
+    print(f"UUID: {my_user_uuid}")  
+
+    # TODO: we're suppose to check that we have permission to access
+    # this message_group_uuid, its missing in our access pattern.
+
+    ddb = Ddb.client()
+    data = Ddb.list_messages(ddb, message_group_uuid)
+    print(" --------list_messages")
+    print(data)
+
+    model['data'] = data
+    return model 
+```
+  
+  - Add the list_message function from the week-5 dbb.py file to my ddb.py file
+
+```
+def list_messages(client,message_group_uuid):
+    current_year = datetime.now().year
+    table_name = 'cruddur-messages'
+    query_params = {
+      'TableName': table_name,
+      'KeyConditionExpression': 'pk = :pk AND begins_with(sk,:year)',
+      'ScanIndexForward': False,
+      'Limit': 20,
+      'ExpressionAttributeValues': {
+        ':year': {'S': str(current_year) },
+        ':pk': {'S': f"MSG#{message_group_uuid}"}
+      }
+    }
+
+
+    # query the table
+    response = client.query(**query_params)
+    items = response['Items']
+    items.reverse()
+    results = []
+
+    for item in items:
+      last_sent_at = item['sk']['S']
+      results.append({
+        'uuid': item['message_uuid']['S'],
+        'display_name': item['user_display_name']['S'],
+        'handle': item['user_handle']['S'],
+        'message': item['message']['S'],
+        'created_at': last_sent_at
+      })
+    return results
+```
+
+  - End results should load the messages when clicking on the message conversations in the side. 
+![image](https://user-images.githubusercontent.com/56792014/227730696-f29cd990-d56a-4137-8695-37820cc3919e.png)
+
+
+
+### 9. Implement (Pattern D) Creating a Message for a new Message Group into Application	
 
 ##### Context:
-  - We will use a schema-load python script that will create a table inside our existing AWS RDS.
-
-
-##### Steps:
-
-### 10. Implement (Pattern D) Creating a Message for a new Message Group into Application	
-
-##### Context:
-  - We will use a schema-load python script that will create a table inside our existing AWS RDS.
-
+  - Create and send a new message in a conversation
+ 
 
 ##### Steps:
+  - **MessageForm.js** onsubmit function will be modified
+
+  - The condition in the attached screenshot accords to the access patterns between **Pattern C** which is the **creation of a new conversation** vs **Pattern D** which **updates an existing conversation**. 
+![image](https://user-images.githubusercontent.com/56792014/227729673-ab27db4c-c316-4d01-8357-e6acae8941ac.png)
+
+  - Access patterns C & D
+![image](https://user-images.githubusercontent.com/56792014/227729796-3a7578ab-3251-40f3-ae03-f58e02a265c4.png)
+
+  - The **app.route(/api/messages)** section will be modified to take the message_group_uuid and run the CreateMessage mode **update** or **create** depending if creating a new conversation or updating an existing conversation
+  
+```
+@app.route("/api/messages", methods=['POST','OPTIONS'])
+@cross_origin()
+def data_create_message():
+  access_token = extract_access_token(request.headers)
+  user_receiver_handle = request.json.get('handle',None)
+  message_group_uuid = request.json.get('message_group_uuid',None)
+    
+  try:
+    claims = cognito_jwt_token.verify(access_token)
+    app.logger.debug('token is authenticated')
+    app.logger.debug(claims)
+    cognito_user_id = claims['sub']
+    message = request.json['message']
+    
+    if message_group_uuid == None:
+      # Create for the first time
+      model = CreateMessage.run(
+        mode="create",
+        message=message,
+        cognito_user_id=cognito_user_id,
+        user_receiver_handle=user_receiver_handle
+      )
+    else:
+      # Push onto existing Message Group
+      model = CreateMessage.run(
+        mode="update",
+        message=message,
+        message_group_uuid=message_group_uuid,
+        cognito_user_id=cognito_user_id
+      )
+    
+    if model['errors'] is not None:
+      return model['errors'], 422
+    else:
+      return model['data'], 200
+
+  except TokenVerifyError as e:
+      # unauthenticated request
+      app.logger.debug(e)
+      return {}, 401
+```
 
 
-### 11. Implement (Pattern E) Updating a Message Group using DynamoDB Streams	
+```
+ const onsubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const backend_url = `${process.env.REACT_APP_BACKEND_URL}/api/messages`
+      console.log('onsubmit payload', message)
+      let json = { 'message': message }
+      if (params.handle) {
+        json.handle = params.handle
+      } else {
+        json.message_group_uuid = params.message_group_uuid
+      }
+
+      const res = await fetch(backend_url, {
+        method: "POST",
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem("access_token")}`,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(json)
+      });
+      let data = await res.json();
+      if (res.status === 200) {
+        console.log('data:',data)
+        if (data.message_group_uuid) {
+          console.log('redirect to message group')
+          window.location.href = `/messages/${data.message_group_uuid}`
+        } else {
+          props.setMessages(current => [...current,data]);
+        }
+      } else {
+        console.log(res)
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+```
+
+  - Go to week-5 branch and get the create_message.py code and paste it into our create_message.py file
+
+create_message.py
+```
+from datetime import datetime, timedelta, timezone
+from lib.db import db
+from lib.ddb import Ddb
+
+
+class CreateMessage:
+  # mode indicates if we want to create a new message_group or using an existing one
+  def run(mode, message, cognito_user_id, message_group_uuid=None, user_receiver_handle=None):
+    model = {
+      'errors': None,
+      'data': None
+    }
+
+    if (mode == "update"):
+      if message_group_uuid == None or len(message_group_uuid) < 1:
+        model['errors'] = ['message_group_uuid_blank']
+
+
+    if cognito_user_id == None or len(cognito_user_id) < 1:
+      model['errors'] = ['cognito_user_id_blank']
+
+    if (mode == "create"):
+      if user_receiver_handle == None or len(user_receiver_handle) < 1:
+        model['errors'] = ['user_receiver_handle_blank']
+
+    if message == None or len(message) < 1:
+      model['errors'] = ['message_blank'] 
+    elif len(message) > 1024:
+      model['errors'] = ['message_exceed_max_chars'] 
+
+    if model['errors']:
+      # return what we provided
+      model['data'] = {
+        'display_name': 'Andrew Brown',
+        'handle':  user_sender_handle,
+        'message': message
+      }
+    else:
+      sql = db.template('users','create_message_users')
+
+      if user_receiver_handle == None:
+        rev_handle = ''
+      else:
+        rev_handle = user_receiver_handle
+      users = db.query_array_json(sql,{
+        'cognito_user_id': cognito_user_id,
+        'user_receiver_handle': rev_handle
+      })
+      
+      my_user    = next((item for item in users if item["kind"] == 'sender'), None)
+      other_user = next((item for item in users if item["kind"] == 'recv')  , None)
+
+      print("USERS =-=-=-=-==")
+      print("USERS=[my-user]=========")
+      print(my_user)
+      print("USERS=[other-user]======")
+      print(other_user)
+
+      ddb = Ddb.client()
+
+      if (mode == "update"):
+        data = Ddb.create_message(
+          client=ddb,
+          message_group_uuid=message_group_uuid,
+          message=message,
+          my_user_uuid=my_user['uuid'],
+          my_user_display_name=my_user['display_name'],
+          my_user_handle=my_user['handle']
+        )
+      elif (mode == "create"):
+        data = Ddb.create_message_group(
+          client=ddb,
+          message=message,
+          my_user_uuid=my_user['uuid'],
+          my_user_display_name=my_user['display_name'],
+          my_user_handle=my_user['handle'],
+          other_user_uuid=other_user['uuid'],
+          other_user_display_name=other_user['display_name'],
+          other_user_handle=other_user['handle']
+        )
+      model['data'] = data
+      return model
+```
+
+  - Navigate again to week-5 branch and get the create_message function code from the ddb.py file and paste it into our ddb.py file.
+
+ddb.py create_message function
+```
+ def create_message(client, message_group_uuid, message, my_user_uuid, my_user_display_name, my_user_handle):
+    now = datetime.now(timezone.utc).astimezone().isoformat()
+    created_at = now
+    message_uuid = str(uuid.uuid4())
+
+    record = {
+      'pk':   {'S': f"MSG#{message_group_uuid}"},
+      'sk':   {'S': created_at },
+      'message': {'S': message},
+      'message_uuid': {'S': message_uuid},
+      'user_uuid': {'S': my_user_uuid},
+      'user_display_name': {'S': my_user_display_name},
+      'user_handle': {'S': my_user_handle}
+    }
+    # insert the record into the table
+    table_name = 'cruddur-messages'
+    response = client.put_item(
+      TableName=table_name,
+      Item=record
+    )
+    # print the response
+    print('----------this is the ddb response')
+    print(response)
+    print(record)
+    return {
+      'message_group_uuid': message_group_uuid,
+      'uuid': my_user_uuid,
+      'display_name': my_user_display_name,
+      'handle':  my_user_handle,
+      'message': message,
+      'created_at': created_at
+    }
+```
+
+  - Results for updating an existing conversation should look like this.
+![image](https://user-images.githubusercontent.com/56792014/227730409-d4312228-7b7c-4ca4-9245-b806b87d3c57.png)
+
+  
+  - We will now proceed on the implementation of new messages creation
+  - Navigate to App.js and insert a new path 
+
+**App.js**
+![image](https://user-images.githubusercontent.com/56792014/227730830-1a58ff1a-945f-49c9-8071-acab8fd08c4b.png)
+![image](https://user-images.githubusercontent.com/56792014/227730843-ea682cc9-aff7-42f4-97c0-b1836128577f.png)
+
+
+  - Grab the file called MessageGroupNewPage.js from week-5 branch and put it in our pages folder. Add the corresponding routing from the affected pages and add the CheckAuth to the new files.
+
+**MessageGroupNewPage.js**
+![image](https://user-images.githubusercontent.com/56792014/227731131-47a20c83-34b2-4be9-b036-ee0accfa9d18.png)
+
+  - Add a new user in our seed.sql to test our create new message functionality
+
+seed.sql
+![image](https://user-images.githubusercontent.com/56792014/227731171-7b70eeab-6d47-4862-9bd4-e0390cd5f293.png)
+
+  - For the meantime we will add this user right now after adding it to our seed.sql
+
+Login to our database 
+```
+./bin/db/connect
+```
+
+Insert the new user manually in our existing database
+```
+INSERT INTO public.users (display_name,email, handle, cognito_user_id) VALUES ('Londo Mollari', 'lmollari@centari.com', 'londo','MOCK');
+```
+
+  - From app.py we will add a new route call user_shorts
+![image](https://user-images.githubusercontent.com/56792014/227731310-a4ab3f61-eb75-4636-a680-c5b41ff297f8.png)
+
+  - And also add this new route in our app.py
+![image](https://user-images.githubusercontent.com/56792014/227731333-ab3bebe8-f7db-49ef-a8c2-8301b15a7db2.png)
+
+  - We will also create a new file in our services folder called **users_short.py**. The contents are from the week-5 branch
+![image](https://user-images.githubusercontent.com/56792014/227731354-4eff55fd-d00d-475b-a9c2-3bdf66549945.png)
+
+  - We will also create a new file called **MessageGroupNewItem.js** and add it to our components folder
+![image](https://user-images.githubusercontent.com/56792014/227731457-03e3c719-bbbb-4eed-9ca6-3f3b3f7ead9f.png)
+
+
+  - All of the newly added files will enable the app to use the handle as an endpoint to create a new message
+  - End result should look like this
+![image](https://user-images.githubusercontent.com/56792014/227731511-491319ed-6695-4dc9-bef5-a4f7e6b78540.png)
+
+
+
+
+### 10. Implement (Pattern E) Updating a Message Group using DynamoDB Streams	
 
 ##### Context:
   - We will use a schema-load python script that will create a table inside our existing AWS RDS.
