@@ -1324,7 +1324,108 @@ INSERT INTO public.users (display_name,email, handle, cognito_user_id) VALUES ('
 ### 10. Implement (Pattern E) Updating a Message Group using DynamoDB Streams	
 
 ##### Context:
-  - We will use a schema-load python script that will create a table inside our existing AWS RDS.
+  - Leverage DynamoDB Streams to our creation of new conversations and updating existing conversations
+  
+DynamoDB Modeling
+![image](https://user-images.githubusercontent.com/56792014/227732101-2f108a4a-0d3b-40ad-b765-a9dc62e88e34.png)
 
 
 ##### Steps:
+
+  - Copy the file **cruddur-messaging-stream.py** from branch week-5 again again and put it in the lambdas folder. We will create a new lambda using this code.
+  - Navigate to AWS Console and go to AWS Lambda
+  - Click on 'Create function'
+  ![image](https://user-images.githubusercontent.com/56792014/227732380-15b9f8df-491e-4618-9d9c-2dabbeba877e.png)
+
+  - Configure the Lambda after creation by navigating to **Configuration > VPC** and setting up the VPC
+  - Also configure the necessary permissions to allow access to DynamoDB
+  ![image](https://user-images.githubusercontent.com/56792014/227732514-d2db1295-21d0-4f01-9f89-8c1e726a02f0.png)
+  ![image](https://user-images.githubusercontent.com/56792014/227732531-7e6f0073-a4a4-4eba-932f-e35637a143c6.png)
+
+  - Comment out the endpoint url to allow the DynamoDB Streams to access the application
+  ![image](https://user-images.githubusercontent.com/56792014/227732581-83911e21-02ba-4eff-bbbe-77563c2c3729.png)
+
+  - schema-load in ddb folder will be modified to include a **GlobalSecondaryIndex**
+
+```
+#!/usr/bin/env python3
+
+import boto3
+import sys
+
+attrs = {
+    'endpoint_url':'http://localhost:8000'
+}
+
+if len(sys.argv) == 2:
+    if "prod" in sys.argv[1]:
+        attrs = {}
+
+ddb = boto3.client('dynamodb', **attrs)
+
+table_name = 'cruddur-messages'
+
+
+response = ddb.create_table(
+    TableName=table_name,
+    AttributeDefinitions=[
+        {
+            'AttributeName': 'pk',
+            'AttributeType': 'S'
+        },
+        {
+            'AttributeName': 'message_group_uuid',
+            'AttributeType': 'S'
+        },
+        {
+            'AttributeName': 'sk',
+            'AttributeType': 'S'
+        }
+    ],
+    KeySchema=[
+        {
+            'AttributeName': 'pk',
+            'KeyType': 'HASH'
+        },
+        {
+            'AttributeName': 'sk',
+            'KeyType': 'RANGE'
+        },
+    ],
+    BillingMode='PROVISIONED',
+    ProvisionedThroughput={
+        'ReadCapacityUnits': 5,
+        'WriteCapacityUnits': 5
+    },
+    GlobalSecondaryIndexes=   [{
+    'IndexName':'message-group-sk-index',
+    'KeySchema':[{
+        'AttributeName': 'message_group_uuid',
+        'KeyType': 'HASH'
+    },{
+        'AttributeName': 'sk',
+        'KeyType': 'RANGE'
+    }],
+        'Projection': {
+        'ProjectionType': 'ALL'
+    },
+        'ProvisionedThroughput': {
+        'ReadCapacityUnits': 5,
+        'WriteCapacityUnits': 5
+    },
+    }]
+)
+
+
+print(response)
+
+```
+  - After updating schema-load file
+  - Run the schema-load file with "prod" at the end to trigger the dynamodb streams instead of the local dynamodb
+
+
+  - End result should look like this
+![image](https://user-images.githubusercontent.com/56792014/227732172-df19a970-30c5-44be-a9f5-6407a48d2c8d.png)
+
+  - Cloudwatch Logs 
+![image](https://user-images.githubusercontent.com/56792014/227732820-37dcc92c-b23d-4974-8c24-d34b729d81b7.png)
