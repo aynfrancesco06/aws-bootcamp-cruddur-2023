@@ -17,8 +17,6 @@ table_name = 'cruddur-messages'
 
 
 
-
-
 response = ddb.create_table(
     TableName=table_name,
     AttributeDefinitions=[

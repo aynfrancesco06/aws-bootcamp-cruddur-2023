@@ -1,0 +1,19 @@
+#!/usr/bin/env python3
+
+import urllib.request
+
+try:
+    response = urllib.request.urlopen('http://localhost:4567/api/health-check')
+    if response.getcode() == 200:
+        print("[GOOD]Flask server is running")
+        exit(0)
+    else:
+        print(" [BAD] Flask server is not running")
+        exit(1)
+# This for some reason is not capturing the error.
+# except ConnectionRefusedError as e:
+# So we will going to do a catch all for errors even though this is bad practice
+
+except Exception as e:
+    print(e)
+    exit(1)
