@@ -1,7 +1,7 @@
 #! /usr/bin/bash
 
 if [ -z "$1" ]; then
-    echo "TASK_ID argument supplied eg. ./bin/ecs/connect-to-frontend-react-js 5565386c0372485ea69fe3265306ff12 backend-flask"
+    echo "TASK_ID argument supplied eg. ./bin/ecs/connect-to-frontend-react-js 5565386c0372485ea69fe3265306ff12 frontend-react-js"
     exit 1
 fi
 TASK_ID=$1

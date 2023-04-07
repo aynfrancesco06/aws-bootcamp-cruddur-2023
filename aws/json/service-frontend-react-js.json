@@ -18,12 +18,12 @@
           "sg-08fcebbc558ae7336"
         ],
         "subnets": [
-          "subnet-005d0441fedd7f261",
-          "subnet-020eafa8535570d3c",
-          "subnet-00f11d6def9cd8b4d",
-          "subnet-022acc72a8853763f",
-          "subnet-00c775e5d8c735432",
-          "subnet-0ab1453c1fd78236b"
+            "subnet-005d0441fedd7f261",
+            "subnet-020eafa8535570d3c",
+            "subnet-00f11d6def9cd8b4d",
+            "subnet-022acc72a8853763f",
+            "subnet-00c775e5d8c735432",
+            "subnet-0ab1453c1fd78236b"
         ]
       }
     },
