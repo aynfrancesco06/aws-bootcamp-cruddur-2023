@@ -1,0 +1,11 @@
+#! /usr/bin/bash
+
+docker build \
+--build-arg REACT_APP_BACKEND_URL="https://api.thecloudproject.store" \
+--build-arg REACT_APP_AWS_PROJECT_REGION="$AWS_DEFAULT_REGION" \
+--build-arg REACT_APP_AWS_COGNITO_REGION="$AWS_DEFAULT_REGION" \
+--build-arg REACT_APP_AWS_USER_POOLS_ID="us-east-1_y4wlnfhYp" \
+--build-arg REACT_APP_CLIENT_ID="3no4tfio3drtmd69tnf8ail3a7" \
+-t frontend-react-js \
+-f Dockerfile.prod \
+.
