@@ -7,7 +7,7 @@ import DesktopNavigation  from '../components/DesktopNavigation';
 import MessageGroupFeed from '../components/MessageGroupFeed';
 import MessagesFeed from '../components/MessageFeed';
 import MessagesForm from '../components/MessageForm';
-import checkAuth from '../lib/CheckAuth';
+import {checkAuth, getAccessToken} from '../lib/CheckAuth';
 
 // [TODO] Authenication
 //import Cookies from 'js-cookie'
@@ -23,9 +23,11 @@ export default function MessageGroupPage() {
   const loadMessageGroupsData = async () => {
     try {
       const backend_url = `${process.env.REACT_APP_BACKEND_URL}/api/message_groups`
+      await getAccessToken()
+      const access_token = localStorage.getItem("access_token")
       const res = await fetch(backend_url, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`
+          Authorization: `Bearer ${access_token}`
       }, 
         method: "GET"
       });
@@ -43,9 +45,11 @@ export default function MessageGroupPage() {
   const loadMessageGroupData = async () => {
     try {
       const backend_url = `${process.env.REACT_APP_BACKEND_URL}/api/messages/${params.message_group_uuid}`
+      await getAccessToken()
+      const access_token = localStorage.getItem("access_token")
       const res = await fetch(backend_url, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`
+          Authorization: `Bearer ${access_token}`
       }, 
         method: "GET"
       });
