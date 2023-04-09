@@ -7,10 +7,13 @@ printf "${CYAN}==== ${LABEL}${NO_COLOR}\n"
 
 ABS_PATH=$(readlink -f "$0")
 BIN_PATH=$(dirname $ABS_PATH)
-PROJECT_PATH=$(dirname $BIN_PATH)
+HOME_PATH=$(dirname $BIN_PATH)
+PROJECT_PATH=$(dirname $HOME_PATH)
 BACKEND_FLASK_PATH="$PROJECT_PATH/backend-flask"
 seed_path="$BACKEND_FLASK_PATH/db/seed.sql"
 
 echo $seed_path
+
+
 
 psql $CONNECTION_URL cruddur < $seed_path
