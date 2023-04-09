@@ -14,7 +14,7 @@ echo $BACKEND_FLASK_PATH
 
 
 
-docker build \
--f "$BACKEND_FLASK_PATH/Dockerfile.prod" \
--t backend-flask-prod \
-"$BACKEND_FLASK_PATH/."
+#docker build \
+#f "$BACKEND_FLASK_PATH/Dockerfile.prod" \
+#-t backend-flask-prod \
+#"$BACKEND_FLASK_PATH/."
