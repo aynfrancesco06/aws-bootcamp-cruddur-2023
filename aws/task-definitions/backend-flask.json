@@ -14,12 +14,6 @@
         "image":"public.ecr.aws/xray/aws-xray-daemon",
         "essential": true,
         "user": "1337",
-        "healthCheck": {
-          "command": [
-              "CMD-SHELL",
-              "curl -f http://localhost:2000 || exit 1"
-          ]
-        },
         "portMappings": [
           {
             "name": "xray",
