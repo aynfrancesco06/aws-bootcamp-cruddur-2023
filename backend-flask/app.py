@@ -149,13 +149,10 @@ def data_message_groups():
         return model['errors'], 422
       else:
         return model['data'], 200
- 
-
   except TokenVerifyError as e:
        # unauthenticated request
       app.logger.debug(e)
       return {}, 401 # data = HomeActivities.run(logger=LOGGER)
-# 
 
 @app.route("/api/messages/<string:message_group_uuid>", methods=['GET'])
 def data_messages(message_group_uuid): 
