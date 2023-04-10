@@ -67,9 +67,6 @@ class Db:
    # return a array of json objects
   def query_array_json(self,sql,params={}):
     self.print_sql('array', sql,params)
-    print("SQL [array]-------")
-    print(sql + "\n")
-    print("")
 
     wrapped_sql = self.query_wrap_array(sql)
     with self.pool.connection() as conn:

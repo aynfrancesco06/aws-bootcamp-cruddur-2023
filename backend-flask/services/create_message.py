@@ -31,8 +31,8 @@ class CreateMessage:
     if model['errors']:
       # return what we provided
       model['data'] = {
-        'display_name': 'Andrew Brown',
-        'handle':  user_sender_handle,
+       # 'display_name': 'Andrew Brown',
+       # 'handle':  user_sender_handle,
         'message': message
       }
     else:
@@ -47,7 +47,7 @@ class CreateMessage:
         'user_receiver_handle': rev_handle
       })
       
-      my_user    = next((item for item in users if item["kind"] == 'sender'), None)
+      my_user = next((item for item in users if item["kind"] == 'sender'), None)
       other_user = next((item for item in users if item["kind"] == 'recv')  , None)
 
       print("USERS =-=-=-=-==")
@@ -79,4 +79,4 @@ class CreateMessage:
           other_user_handle=other_user['handle']
         )
       model['data'] = data
-      return model
+    return model
