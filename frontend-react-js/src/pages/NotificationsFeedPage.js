@@ -34,7 +34,7 @@ export default function NotificationsFeedPage() {
       console.log(err);
     }
   };
-
+  
   const checkAuth = async () => {
     console.log('checkAuth')
     // [TODO] Authenication
