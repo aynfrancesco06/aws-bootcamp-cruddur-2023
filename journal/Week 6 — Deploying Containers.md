@@ -62,6 +62,8 @@ https://github.com/imaginarydumpling/aws-bootcamp-cruddur-2023-clone/commit/f6cc
 	docker tag python:3.10-slim-buster $ECR_PYTHON_URL:3.10-slim-buster
 docker push $ECR_PYTHON_URL:3.10-slim-buster
 ```
+![image](https://user-images.githubusercontent.com/127114703/231162445-124ecf44-9643-40db-aa6e-f7af47d0a68f.png)
+
 
   - We will create another repository for the backend-flask using this terminal command. 
 
@@ -84,6 +86,8 @@ echo $ECR_BACKEND_FLASK_URL
 docker tag backend-flask:latest $ECR_BACKEND_FLASK_URL:latest
 docker push $ECR_BACKEND_FLASK_URL:latest
 ``` 
+
+![image](https://user-images.githubusercontent.com/127114703/231162508-06e8cd38-4f34-45b3-960b-9172aedf4d56.png)
 
 
 ### 4. Adding ENV VARS to AWS System Manager Parameter Store
@@ -145,6 +149,15 @@ aws iam attach-role-policy --policy-arn arn:aws:iam::aws:policy/AWSXRayDaemonWri
 ```
 
   - Running these commands will create a policy called 'CruddurTaskRole' with the right permission policies
+  - We will also create a cloudwatch group for our fargate-cluster using these terminal commands
+
+```
+aws logs create-log-group --log-group-name cruddur/fargate-cluster
+aws logs put-retention-policy --log-group-name cruddur/fargate-cluster --retention-in-days 1
+```
+  - Results should be like this 
+ ![image](https://user-images.githubusercontent.com/127114703/231162083-42592da8-6ea0-4962-ae4c-b5651f0bf28b.png)
+
 
 
 ### 6. Running service in Cruddur cluster
@@ -161,9 +174,90 @@ aws ecs create-service --cli-input-json file://aws/json/service-backend-flask.js
   This is the one we setup earlier as an health-check endpoint in app.py
 
 
+### 7. Creating Load Balancer
+
+  - We will create a Load Balancer via AWS GUI
+  - Click on 'Create Load Balancer'
+  - Application Load Balancer with a name of cruddur-alb
+  - Internet facing and dual stack
+  - Use default VPC and choose the AZ's under the VPC, we can also use command terminals to determine what is the default VPC and find the respective AZ's under that VPC 
+
+```
+export DEFAULT_VPC_ID=$(aws ec2 describe-vpcs \
+--filters "Name=isDefault, Values=true" \
+--query "Vpcs[0].VpcId" \
+--output text)
+echo $DEFAULT_VPC_ID
+
+export DEFAULT_SUBNET_IDS=$(aws ec2 describe-subnets  \
+ --filters Name=vpc-id,Values=$DEFAULT_VPC_ID \
+ --query 'Subnets[*].SubnetId' \
+ --output json | jq -r 'join(",")')
+echo $DEFAULT_SUBNET_IDS
+```
+  - We will also create target groups here for frontend and backend 
+![image](https://user-images.githubusercontent.com/127114703/231167338-f28f4260-bd6d-4f24-82a1-6484b930bd6c.png)
+![image](https://user-images.githubusercontent.com/127114703/231167403-08828afa-ca40-451c-89c3-1d440729ac26.png)
+ 
+ 
+  - Add listener tags and point 443 to our frontend target and 80 to the backend.
+ 
+  - Finish the creation after, result should show like this
+![image](https://user-images.githubusercontent.com/127114703/231167750-5bff0c07-b6c7-409e-af6f-2dc391f88a5a.png)
+
+  
+
+
+### 8. Create frontend build 
+  - In this [commit](https://github.com/imaginarydumpling/aws-bootcamp-cruddur-2023-clone/commit/d404e940fc7fa15730c660582a102306bf41d438#diff-e6843ade525f0a7ca02583ea7f8310878228cb53977ad3c62dfa7e16a7f8b67e), we added a load balancer for our frontend-react-js and we will use the load balancer dns to view if the frontend is working publicly. We also added an nginx in our dockerfile for reverse proxy. We've also created a new Dockerfile.prod for our frontend-react-js container here [commit](https://github.com/imaginarydumpling/aws-bootcamp-cruddur-2023-clone/commit/4217c23968e24e59f60bbca40d4530a290dc2051#diff-7c2adaca3e31bca71bdaf16d8980ce69b0f8125cbfddaf9d36f58ca7ef3e799b)
+  
+  - Run these set of commands to build and push the frontend-react-js build to ECR.
+ 
+```
+docker build \
+--build-arg REACT_APP_BACKEND_URL="https://4567-$GITPOD_WORKSPACE_ID.$GITPOD_WORKSPACE_CLUSTER_HOST" \
+--build-arg REACT_APP_AWS_PROJECT_REGION="$AWS_DEFAULT_REGION" \
+--build-arg REACT_APP_AWS_COGNITO_REGION="$AWS_DEFAULT_REGION" \
+--build-arg REACT_APP_AWS_USER_POOLS_ID="<YOUR USER ID POOL>" \
+--build-arg REACT_APP_CLIENT_ID="< YOUR APP CLIENT ID>" \
+-t frontend-react-js \
+-f Dockerfile.prod \
+.
+```
+
+```
+docker tag frontend-react-js:latest $ECR_FRONTEND_REACT_URL:latest
+docker push $ECR_FRONTEND_REACT_URL:latest
+```
+  - We will also add health-checks on a container level for our frontend task definition here in this [commit](https://github.com/imaginarydumpling/aws-bootcamp-cruddur-2023-clone/commit/b12a543219f146ea1ec643007c0a74d683ba9917#diff-b1ee9974828856aa33e1eae739e5a1e7b07a9bdbee3b5665e040a451cba663ff)
+
+  - After pushing the file, we can register the task definitions for frontend-react-js and launch create service.
+  - Result should be showing the Homepage with the address directed to our created load balancer
+ 
+ 
+ ### 9. Created Hosted Zone
+ 
+   - In this [commit](https://github.com/imaginarydumpling/aws-bootcamp-cruddur-2023-clone/commit/a503931adae92ef296c0c7d92ac04e6cd017443b#diff-fce4cbfaaa6ae500dea2961ebd2e8395ff961a7a764b1cebc1f11325d50a2866), the env vars are modified to point to the created hosted zone in our AWS account. This will enable to route the backend and frontend to our domain hosted in AWS Route 53 Hosted Zone
+   - We will also create a hosted zone in AWS Route 53
+   - Click on create hosted zone, put the domain name of the domain you bought. in my case its thecloudproject.store and set to public hosted zone
+   - After creation copy the NS generated by your hosted zone and put it in the custom DNS of your domain registrar, which in my case is namecheap. Wait for a few hours to propagate the new DNS after setting up your NS.
+  ![image](https://user-images.githubusercontent.com/127114703/231169461-75fb99f1-0ede-4b24-8406-c0726654115e.png)
+
+  - Navigate to ACM to create certificates for our hosted zone domain.
+  - Click on request a public certificate
+  - Enter domain name, thecloudproject.store and *.thecloudproject.store
+  - DNS validation
+  - Everything else leave on default
+  - Click on request
+  - Click on the created certificate and Create Records in route 53, create the records for both domain created earlier in the ACM.
+  - The created records from ACM should reflect in the Route 53 Hosted Zone as a CNAME
+![image](https://user-images.githubusercontent.com/127114703/231170253-88eb4838-b50c-4a95-bedc-142b7c894897.png)
+
+  - Create 2 Alias for thecloudproject.store and api.thecloudproject.store point it both to our ALB
+  - After point it to our ALB, we should be able to access our application over our domain name.
+
+![image](https://user-images.githubusercontent.com/127114703/231170856-137e7b88-5c8d-4422-b80c-f6e21525f9af.png)
 
 
 
-### 7. Setup a load balancer
 
-  - Navigate to EC2 and find the Load Balancer. Click create Load Balancer 
