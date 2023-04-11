@@ -30,4 +30,4 @@ The `/journal` directory contains
 - [ ] [Week 10 — CloudFormation Part 1](https://github.com/imaginarydumpling/aws-bootcamp-cruddur-2023-clone/blob/main/journal/Week%2010%20%E2%80%94%20CloudFormation%20Part%201.md)
 - [ ] [Week 11 — CloudFormation Part 2](https://github.com/imaginarydumpling/aws-bootcamp-cruddur-2023-clone/blob/main/journal/Week%2011%20%E2%80%94%20CloudFormation%20Part%202.md)
 - [ ] [Week 12 — Modern API](https://github.com/imaginarydumpling/aws-bootcamp-cruddur-2023-clone/blob/main/journal/Week%2012%20%E2%80%94%20Modern%20APIs.md)
-- [ ] [(Week 13 — (Secret Bonus Class).md](https://github.com/imaginarydumpling/aws-bootcamp-cruddur-2023-clone/blob/main/journal/Week%2013%20%E2%80%94%20(Secret%20Bonus%20Class).md)
+- [ ] [(Week 13 — (Secret Bonus Class)](https://github.com/imaginarydumpling/aws-bootcamp-cruddur-2023-clone/blob/main/journal/Week%2013%20%E2%80%94%20(Secret%20Bonus%20Class).md)
