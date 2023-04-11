@@ -232,6 +232,12 @@ docker push $ECR_FRONTEND_REACT_URL:latest
   - We will also add health-checks on a container level for our frontend task definition here in this [commit](https://github.com/imaginarydumpling/aws-bootcamp-cruddur-2023-clone/commit/b12a543219f146ea1ec643007c0a74d683ba9917#diff-b1ee9974828856aa33e1eae739e5a1e7b07a9bdbee3b5665e040a451cba663ff)
 
   - After pushing the file, we can register the task definitions for frontend-react-js and launch create service.
+
+```
+aws ecs create-service --cli-input-json file://aws/json/service-backend-flask.json
+aws ecs create-service --cli-input-json file://aws/json/service-frontend-react-js.json
+```
+  
   - Result should be showing the Homepage with the address directed to our created load balancer
  
  
