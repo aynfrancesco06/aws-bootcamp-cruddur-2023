@@ -17,7 +17,7 @@ At the start of the bootcamp you need to create a new Github Repository from thi
 
 The `/journal` directory contains
 
-- [ ] [Week 0 — Billing and Architecture]([journal/Week 0 — Billing and Architecture.md](https://github.com/imaginarydumpling/aws-bootcamp-cruddur-2023-clone/blob/main/journal/Week%200%20%E2%80%94%20Billing%20and%20Architecture.md))
+- [ ] [Week 0 — Billing and Architecture](https://github.com/imaginarydumpling/aws-bootcamp-cruddur-2023-clone/blob/main/journal/Week%200%20%E2%80%94%20Billing%20and%20Architecture.md)
 - [ ] [Week 1](journal/Week 1 — App Containerization.md)
 - [ ] [Week 2](journal/Week 2 — Distributed Tracing.md)
 - [ ] [Week 3](journal/Week 3 — Decentralized Authentication.md)
