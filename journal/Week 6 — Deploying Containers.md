@@ -268,8 +268,7 @@ The pathing of the scripts is also fixed in this [commit](https://github.com/ima
 
 ### 11. Implementing messages in our production
 
- - Message implementation is tackled here in this [commit](https://github.com/imaginarydumpling/aws-bootcamp-cruddur-2023-clone/commit/631f6e8f0b9d16bad0bde6812877094153b64b6f)
- - This [commit]()
+ - Message implementation is tackled here in this [commit](https://github.com/imaginarydumpling/aws-bootcamp-cruddur-2023-clone/commit/631f6e8f0b9d16bad0bde6812877094153b64b6f) as well as troubleshooting some code here [commit](https://github.com/imaginarydumpling/aws-bootcamp-cruddur-2023-clone/commit/63dfaf039bc8e063ac7e32bbc8ebfd4c06b4367c#diff-0014cc1f7ffd53e63ff797f0f2925a994fbd6797480d9ca5bbc5dc65f1b56438) 
 
 
 ### 12. Modifying our env vars
