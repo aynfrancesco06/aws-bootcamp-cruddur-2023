@@ -55,10 +55,115 @@ https://github.com/imaginarydumpling/aws-bootcamp-cruddur-2023-clone/commit/f6cc
 	aws ecr get-login-password --region $AWS_DEFAULT_REGION|docker login --username AWS --password-stdin "$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com"
 
 ```
-  - Get the URI of the cruddur-python repo created in ECR. Then run this command
+  - Get the URI of the cruddur-python repo created in ECR. Then run this command.
 
 ```
 	docker pull python:3.10-slim-buster
 	docker tag python:3.10-slim-buster $ECR_PYTHON_URL:3.10-slim-buster
 docker push $ECR_PYTHON_URL:3.10-slim-buster
 ```
+
+  - We will create another repository for the backend-flask using this terminal command. 
+
+```
+	aws ecr create-repository \
+  --repository-name backend-flask \
+  --image-tag-mutability MUTABLE
+
+```      
+  - Run these commands in the terminal to create an ENV_VAR for the backend-flask URI
+
+```
+export ECR_BACKEND_FLASK_URL="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/backend-flask"
+echo $ECR_BACKEND_FLASK_URL
+```
+
+  - We will run these set of commands to tag and push the docker image to our created ECR repo.
+
+```
+docker tag backend-flask:latest $ECR_BACKEND_FLASK_URL:latest
+docker push $ECR_BACKEND_FLASK_URL:latest
+``` 
+
+
+### 4. Adding ENV VARS to AWS System Manager Parameter Store
+
+  - Type these commands in gitpot terminal.
+  
+  ```
+  aws ssm put-parameter --type "SecureString"--name "/cruddur/backend-flask/AWS_ACCESS_KEY_ID"--value $AWS_ACCESS_KEY_ID
+	aws ssm put-parameter --type "SecureString"--name "/cruddur/backend-flask/AWS_SECRET_ACCESS_KEY"--value $AWS_SECRET_ACCESS_KEY
+	aws ssm put-parameter --type "SecureString"--name "/cruddur/backend-flask/CONNECTION_URL"--value $PROD_CONNECTION_URL
+	aws ssm put-parameter --type "SecureString"--name "/cruddur/backend-flask/ROLLBAR_ACCESS_TOKEN"--value $ROLLBAR_ACCESS_TOKEN
+  aws ssm put-parameter --type "SecureString"--name "/cruddur/backend-flask/OTEL_EXPORTER_OTLP_HEADERS"--value "x-honeycomb-team=$HONEYCOMB_API_KEY"
+  ```
+  - These commands will import the necessary local env vars to our parameter store in secured way. These parameters will be used to reference them in our backend and frontend repositories in ECR.
+
+  - [reference](	Reference:
+https://docs.aws.amazon.com/AmazonECS/latest/developerguide/specifying-sensitive-data.html )
+  -[reference]( https://docs.aws.amazon.com/AmazonECS/latest/developerguide/secrets-envvar-ssm-paramstore.html) 
+
+
+### 5. Adding roles and policies for ECS tasks and services
+
+  - With the policies created in aws/policies. Run these commands.
+
+```
+aws iam create-role \
+    --role-name CruddurTaskRole \
+    --assume-role-policy-document "{
+  \"Version\":\"2012-10-17\",
+  \"Statement\":[{
+    \"Action\":[\"sts:AssumeRole\"],
+    \"Effect\":\"Allow\",
+    \"Principal\":{
+      \"Service\":[\"ecs-tasks.amazonaws.com\"]
+    }
+  }]
+}"
+
+aws iam put-role-policy \
+  --policy-name SSMAccessPolicy \
+  --role-name CruddurTaskRole \
+  --policy-document "{
+  \"Version\":\"2012-10-17\",
+  \"Statement\":[{
+    \"Action\":[
+      \"ssmmessages:CreateControlChannel\",
+      \"ssmmessages:CreateDataChannel\",
+      \"ssmmessages:OpenControlChannel\",
+      \"ssmmessages:OpenDataChannel\"
+    ],
+    \"Effect\":\"Allow\",
+    \"Resource\":\"*\"
+  }]
+}
+"
+
+aws iam attach-role-policy --policy-arn arn:aws:iam::aws:policy/CloudWatchFullAccess --role-name CruddurTaskRole
+aws iam attach-role-policy --policy-arn arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess --role-name CruddurTaskRole
+```
+
+  - Running these commands will create a policy called 'CruddurTaskRole' with the right permission policies
+
+
+### 6. Running service in Cruddur cluster
+
+  - Run this command to run backend service in cruddur cluster.
+
+```
+aws ecs create-service --cli-input-json file://aws/json/service-backend-flask.json
+```
+
+  - After creating the service we can verify the healthiness of our container by using the connect-to-service script and adding the session id of the current running tasks in backend-flask service  
+
+  - We can also check the health-checks via the {$PUBLIC_ID}:4567/api/health-check. 
+  This is the one we setup earlier as an health-check endpoint in app.py
+
+
+
+
+
+### 7. Setup a load balancer
+
+  - Navigate to EC2 and find the Load Balancer. Click create Load Balancer 
