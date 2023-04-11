@@ -12,10 +12,17 @@ PROJECT_PATH=$(dirname $HOME_PATH)
 BACKEND_FLASK_PATH="$PROJECT_PATH/backend-flask"
 kill_path="$BACKEND_FLASK_PATH/db/kill-all-connections.sql"
 
+echo $ABS_PATH
+echo $BIN_PATH
+echo $HOME_PATH
+echo $PROJECT_PATH
+echo $BACKEND_FLASK_PATH
+echo $kill_path
+
 
 URL=$CONNECTION_URL
 
 
-psql $URL cruddur < $schema_path
+psql $URL cruddur < $kill_path
 
 
