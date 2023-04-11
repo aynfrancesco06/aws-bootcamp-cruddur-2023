@@ -235,7 +235,7 @@ docker push $ECR_FRONTEND_REACT_URL:latest
   - Result should be showing the Homepage with the address directed to our created load balancer
  
  
- ### 9. Created Hosted Zone
+### 9. Created Hosted Zone
  
    - In this [commit](https://github.com/imaginarydumpling/aws-bootcamp-cruddur-2023-clone/commit/a503931adae92ef296c0c7d92ac04e6cd017443b#diff-fce4cbfaaa6ae500dea2961ebd2e8395ff961a7a764b1cebc1f11325d50a2866), the env vars are modified to point to the created hosted zone in our AWS account. This will enable to route the backend and frontend to our domain hosted in AWS Route 53 Hosted Zone
    - We will also create a hosted zone in AWS Route 53
@@ -259,5 +259,29 @@ docker push $ECR_FRONTEND_REACT_URL:latest
 ![image](https://user-images.githubusercontent.com/127114703/231170856-137e7b88-5c8d-4422-b80c-f6e21525f9af.png)
 
 
+### 10. Create docker build scripts for frontend and backend container
+
+  - In this [commit](https://github.com/imaginarydumpling/aws-bootcamp-cruddur-2023-clone/commit/2d2b1c37ef474cfa68a4c7566882f8966487e2ea#diff-ce68e9fcfe8d8a8400d12b8e17539923971918424922298d21f7ef6f30edd299), I've added a docker build scripts for our front-end and back-end. We've also moved the bin folder to top level to make it easier to run the scripts. 
+The pathing of the scripts is also fixed in this [commit](https://github.com/imaginarydumpling/aws-bootcamp-cruddur-2023-clone/commit/93e84351a7515173d1e358718872d2d6286813e3#diff-e6a925f624a2dcc9ae564564b16aa035e6938165abe353a7a5759fa9f37ca681)
+
+ - We added a force deploy here in this [commit](https://github.com/imaginarydumpling/aws-bootcamp-cruddur-2023-clone/commit/e41d8df7535f70020b64624091a0ff2e98ba27de) which should be ran after running the build and push scripts for our frontend and backend
+
+### 11. Implementing messages in our production
+
+ - Message implementation is tackled here in this [commit](https://github.com/imaginarydumpling/aws-bootcamp-cruddur-2023-clone/commit/631f6e8f0b9d16bad0bde6812877094153b64b6f)
+ - This [commit]()
 
 
+### 12. Modifying our env vars
+
+ - This [commit](https://github.com/imaginarydumpling/aws-bootcamp-cruddur-2023-clone/commit/5bb0c14ee204cfbcb860c50550cb8d2502823e0b) focuses on removing the env vars in our docker compose file and putting it on a separate script that generates a env.file.
+
+
+### 13. Adding ECS Insights
+
+  - This [commit](https://github.com/imaginarydumpling/aws-bootcamp-cruddur-2023-clone/commit/82d49f9cd60cc747506ffeff4a534798b2c639af) shows where we added an aws-xray-daemon for ECS Insights, this would allow us to have more visibility in the problems happening within our ECS Containers. We've also created a register script to automate the container register before being deployed in the deploy register script.
+
+### 14. Refresh Token Cognito
+
+  - This [commit](https://github.com/imaginarydumpling/aws-bootcamp-cruddur-2023-clone/commit/9db78125cedac60ec6c76d73943b47c269004d0a#diff-fce4cbfaaa6ae500dea2961ebd2e8395ff961a7a764b1cebc1f11325d50a2866) focuses on implementing refresh token cognito.
+  - Our checkAuth [here](https://github.com/imaginarydumpling/aws-bootcamp-cruddur-2023-clone/commit/9db78125cedac60ec6c76d73943b47c269004d0a#diff-716a46d7255bdc7f3c7c1f5f463d4580b0f4dcb288e9027b432ea13e8baebdf9) is modified and the access_token will be used across other pages as the bearer token [HomeFeedPage](https://github.com/imaginarydumpling/aws-bootcamp-cruddur-2023-clone/commit/9db78125cedac60ec6c76d73943b47c269004d0a#diff-292834603c08709370ba2559a46a774323654828319cad0f1725ab83a5f41537) [MessageGroupNewpage](https://github.com/imaginarydumpling/aws-bootcamp-cruddur-2023-clone/commit/9db78125cedac60ec6c76d73943b47c269004d0a#diff-19e1c41053ae4fc921364047da3f3c2e049950392fd522cbd1605a57ded7312b)[MessageGroupPage](https://github.com/imaginarydumpling/aws-bootcamp-cruddur-2023-clone/commit/9db78125cedac60ec6c76d73943b47c269004d0a#diff-7932be144100c97223bc212a13afa0b412f89e80ec7d3691a5901066a2765325)[MessageGroupsPage](https://github.com/imaginarydumpling/aws-bootcamp-cruddur-2023-clone/commit/9db78125cedac60ec6c76d73943b47c269004d0a#diff-6fe73cc7bc0f0c7934716b6c0b2a70902b39626ffc13d6ca161aed6cfc3fe54d)[MessageForm](https://github.com/imaginarydumpling/aws-bootcamp-cruddur-2023-clone/commit/9db78125cedac60ec6c76d73943b47c269004d0a#diff-7cf22502ee0acb0e53dcb9131f62f9074c7232526249db46d5d2d32c11af1633)
