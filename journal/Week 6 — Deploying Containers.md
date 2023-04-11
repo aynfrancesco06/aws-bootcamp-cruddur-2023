@@ -294,3 +294,15 @@ Verifying messaging in prod working
 Refresh token working
 
 ![image](https://user-images.githubusercontent.com/127114703/231194260-9f55410a-6bce-4009-833a-a040109f44ac.png)
+
+### 15. Fixing timezones issues fir ISO 8601
+
+  - This [commit](https://github.com/imaginarydumpling/aws-bootcamp-cruddur-2023-clone/commit/e2eda259adeb214b0f27a6f9a9dc0116e3f39e27) shows a new file being added called DateTimeFormat.js where we will use the UTC timezone as our reference for how many minutes have passed after posting a message or activity in the homepage.
+  - The functions inside it will be referenced to many files in frontend-react-js/src/components
+  - Results should be like this after the said changes.
+
+![image](https://user-images.githubusercontent.com/127114703/231249295-146ba3d6-e85a-4b87-a94e-2b43e2b5f7c9.png)
+
+
+![image](https://user-images.githubusercontent.com/127114703/231249329-633d79ad-0eac-4b05-9281-16a832081905.png)
+
