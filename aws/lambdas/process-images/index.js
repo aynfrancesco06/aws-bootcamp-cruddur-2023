@@ -11,8 +11,6 @@ const height = parseInt(process.env.PROCESS_HEIGHT)
 client = getClient();
 
 exports.handler = async (event) => {
-
-
   const srcBucket = event.Records[0].s3.bucket.name;
   const srcKey = decodeURIComponent(event.Records[0].s3.object.key.replace(/\+/g, ' '));
   console.log('srcBucket',srcBucket)
@@ -21,7 +19,6 @@ exports.handler = async (event) => {
   const dstBucket = bucketName;
   
   filename = path.parse(srcKey).name
-
   const dstKey = `${folderOutput}/${filename}.jpg`
   console.log('dstBucket',dstBucket)
   console.log('dstKey',dstKey)
