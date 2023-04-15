@@ -6,7 +6,7 @@ import * as subscriptions from 'aws-cdk-lib/aws-sns-subscriptions';
 import * as s3n from 'aws-cdk-lib/aws-s3-notifications';
 import * as sns from 'aws-cdk-lib/aws-sns'
 import { Construct } from 'constructs';
-
+import * as process from 'process';
 
 
 //load env vars
@@ -33,7 +33,7 @@ export class ThumbingServerlessCdkStack extends cdk.Stack {
     console.log('folderOutput',folderOutput)
     console.log('webhookUrl',webhookUrl)
     console.log('topicName',topicName)
-    
+    console.log('functionPath',functionPath)
 
 
     const uploadsBucket = this.createBucket(uploadsBucketName);
