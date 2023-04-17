@@ -46,6 +46,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/@andrewbrown",
+    //path: "/@:handle",
     element: <UserFeedPage />
   },
   {

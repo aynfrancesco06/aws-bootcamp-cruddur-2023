@@ -2,7 +2,7 @@ import './ProfileHeading.css';
 import EditProfileButton from '../components/EditProfileButton';
 
 export default function ProfileHeading(props) {
-  const backgroundImage = 'url("https://assets.thecloudproject.store/banners/banner.jpg")';
+  const backgroundImage = 'url("https://assets.thecloudproject.store/avatars/data.jpg")';
   const styles = {
     backgroundImage: backgroundImage,
     backgroundSize: 'cover',

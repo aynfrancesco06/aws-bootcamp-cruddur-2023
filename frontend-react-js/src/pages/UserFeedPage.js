@@ -17,7 +17,7 @@ export default function UserFeedPage() {
   const [activities, setActivities] = React.useState([]);
   const [profile, setProfile] = React.useState([]);
   const [popped, setPopped] = React.useState([]);
-  const [poppedProfile, setPoppedProfile] = react.useState([]);
+  const [poppedProfile, setPoppedProfile] = React.useState([]);
   const [user, setUser] = React.useState(null);
   const dataFetchedRef = React.useRef(false);
 
@@ -66,11 +66,7 @@ export default function UserFeedPage() {
         <ActivityForm popped={popped} setActivities={setActivities} />
         
         <div className='activity_feed'>
-          <ProfileHeading setPopped={setPoppedProfile} profile={poppedProfile}/>
-          <div className='activity_feed_heading'>
-          <div className='title'>{profile.display_name}</div>
-          <div class="cruds_count">{profile.cruds_count}Cruds</div>
-        </div>
+          <ProfileHeading setPopped={setPoppedProfile} profile={profile}/>
           <ActivityFeed activities={activities} />
         </div>
       </div>
