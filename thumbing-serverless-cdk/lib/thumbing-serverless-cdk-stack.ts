@@ -7,10 +7,9 @@ import * as s3n from 'aws-cdk-lib/aws-s3-notifications';
 import * as sns from 'aws-cdk-lib/aws-sns'
 import { Construct } from 'constructs';
 import * as process from 'process';
-
+import * as dotenv from 'dotenv';
 
 //load env vars
-const dotenv = require('dotenv');
 dotenv.config();
 
 
@@ -80,14 +79,12 @@ export class ThumbingServerlessCdkStack extends cdk.Stack {
 
 
   createLambda(functionPath: string, assetsBucketName: string, uploadsBucketName: string ,folderInput: string, folderOutput: string): lambda.IFunction {
-    const logicalName = 'ThumbLambda';
-    const code = lambda.Code.fromAsset(functionPath);
-    const lambdaFunction = new lambda.Function(this, logicalName, {
+    const lambdaFunction = new lambda.Function(this, 'ThumbLambda', {
       runtime: lambda.Runtime.NODEJS_18_X,
       handler: 'index.handler',
-      code: code,
+      code: lambda.Code.fromAsset(functionPath),
       environment: {
-        DEST_BUCKET_NAME: assetsBucketName,
+        DEST_BUCKET_NAME: 'assets.thecloudproject.store',
         FOLDER_INPUT: folderInput,
         FOLDER_OUTPUT: folderOutput,
         PROCESS_WIDTH: '512',

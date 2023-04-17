@@ -39,7 +39,6 @@ tasks:
       cd thumbing-serverless-cdk
       cp .env.example .env
       npm i
-
 vscode:
   extensions:
     - 42Crunch.vscode-openapi
