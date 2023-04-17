@@ -1,4 +1,5 @@
 import './App.css';
+import './components/Popup.css';
 
 import HomeFeedPage from './pages/HomeFeedPage';
 import UserFeedPage from './pages/UserFeedPage';

@@ -11,6 +11,7 @@ import EditProfileButton from '../components/EditProfileButton';
 import ProfileHeading from '../components/ProfileHeading';
 import ProfileForm from '../components/ProfileForm';
 
+
 // [TODO] Authenication
 //import Cookies from 'js-cookie'
 
@@ -70,7 +71,7 @@ export default function UserFeedPage() {
           popped={poppedProfile}
           setPopped={setPoppedProfile}
         />
-          
+
         <div className='activity_feed'>
           <ProfileHeading setPopped={setPoppedProfile} profile={profile}/>
           <ActivityFeed activities={activities} />
