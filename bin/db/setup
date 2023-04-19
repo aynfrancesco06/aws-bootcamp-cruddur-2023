@@ -17,3 +17,4 @@ source "$bin_path/create"
 source "$bin_path/schema-load"
 source "$bin_path/seed"
 python "$bin_path/update_cognito_user_ids"
+python "$bin_path/migrate
