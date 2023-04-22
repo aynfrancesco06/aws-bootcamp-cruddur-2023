@@ -30,14 +30,6 @@ env:
     CONTAINER_NAME: backend-flask
     IMAGE_URL: 655967166151.dkr.ecr.us-east-1.amazonaws.com
     REPO_NAME: backend-flask:latest
-    AWS_COGNITO_USER_POOL_CLIENT_ID: 3no4tfio3drtmd69tnf8ail3a7
-  parameter-store:
-    AWS_ACCESS_KEY_ID: "/cruddur/backend-flask/AWS_ACCESS_KEY_ID"
-    AWS_SECRET_ACCESS_KEY: "/cruddur/backend-flask/AWS_SECRET_ACCESS_KEY"
-    CONNECTION_URL: "/cruddur/backend-flask/CONNECTION_URL"
-    OTEL_EXPORTER_OTLP_HEADERS : "/cruddur/backend-flask/OTEL_EXPORTER_OTLP_HEADERS"
-    ROLLBAR_ACCESS_TOKEN : "/cruddur/backend-flask/ROLLBAR_ACCESS_TOKEN"   
-    key: "value"
 artifacts:
   files:
     - imagedefinitions.json
