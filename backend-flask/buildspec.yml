@@ -6,7 +6,7 @@ phases:
       docker: 20
     commands:
       - echo "cd into $CODEBUILD_SRC_DIR/backend"
-      - cd $CODEBUILD_SRC_DIR/backend-flask
+      - cd $CODEBUILD_SRC_DIR/backend-flask/buildspec.yml
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $IMAGE_URL
   build:
     commands:
