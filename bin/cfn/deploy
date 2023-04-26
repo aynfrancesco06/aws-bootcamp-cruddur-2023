@@ -1,0 +1,15 @@
+#! /usr/bin/env bash
+set -e #stop script execution if failed
+
+CFN_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/template.yaml"
+#take a template, will name it "my-cluster", no-execute-changeset will enable us to review the changes in the template
+
+cfn-lint $CFN_PATH
+
+aws cloudformation deploy --stack-name "my-cluster" \
+    --template-file $CFN_PATH \
+    --s3-bucket "cfn-project-artifact" \
+    --no-execute-changeset \
+    --capabilities CAPABILITY_NAMED_IAM 
+
+#permission related

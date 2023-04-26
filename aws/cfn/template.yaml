@@ -1,0 +1,12 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: |
+  Setup ECS Cluster
+Resources:
+  ECSCluster: #LogicalName - this will be referenced throughout the other parts of this CFN Template
+    Type: 'AWS::ECS::Cluster'
+    Properties:
+      ClusterName: MyCluster1
+      CapacityProviders:
+        - FARGATE
+#Parameters
+#Mappings
