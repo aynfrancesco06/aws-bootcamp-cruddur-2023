@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 set -e #stop script execution if failed
 
-CFN_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/networking/template2.yaml"
+CFN_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/networking/template.yaml"
 #take a template, will name it "my-cluster", no-execute-changeset will enable us to review the changes in the template
 
 cfn-lint $CFN_PATH
