@@ -48,14 +48,14 @@ Parameters:
     Default: 2
   FrontendUnhealthyThresholdCount:
     Type: Number
-    Default: 15
+    Default: 2
 
   # Backend -----------
   BackendPort:
     Type: Number
     Default: 4567
   BackendHealthCheckIntervalSeconds:
-      Type: Number
+      Type: String
       Default: 15
   BackendHealthCheckPath:
     Type: String
@@ -74,7 +74,7 @@ Parameters:
     Default: 2
   BackendUnhealthyThresholdCount:
     Type: Number
-    Default: 15
+    Default: 2
 
 Resources:
   FargateCluster: 
@@ -97,7 +97,7 @@ Resources:
     # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-loadbalancer.html
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
-      Name: !Sub "${AWS::Stackname}ALB"
+      Name: !Sub "${AWS::StackName}ALB"
       Type: application
       IpAddressType: ipv4
       Scheme: internet-facing
@@ -107,17 +107,17 @@ Resources:
         Fn::Split:
           - ","
           - Fn::ImportValue:
-              !Sub ${NetworkingStack}SubnetIds
+              !Sub "${NetworkingStack}SubnetIds"
       LoadBalancerAttributes:
-        - Name: routing.http2.enabled
+        - Key: routing.http2.enabled
           Value: true
-        - Name: routing.http.preserve_host_header.enabled
+        - Key: routing.http.preserve_host_header.enabled
           Value: false
-        - Name: deletion_protection.enabled
+        - Key: deletion_protection.enabled
           Value: true
-        - Name: load_balancing.cross_zone.enabled
+        - Key: load_balancing.cross_zone.enabled
           Value: true
-        - Name: access_logs.s3.enabled
+        - Key: access_logs.s3.enabled
           Value: false
         # If we want to turn on s3 logs
         # - Name: access_logs.s3.bucket
@@ -126,8 +126,8 @@ Resources:
         #   Value: ""
   HTTPSListener:
     # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-listener.html
+    Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
-      Type: AWS::ElasticLoadBalancingV2::Listener
       Certificates:
         - CertificateArn: !Ref CertificateArn
       DefaultActions:
@@ -138,8 +138,8 @@ Resources:
       Protocol: HTTPS
   HTTPListener:
      # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-listener.html
-      Properties:
-        Type: AWS::ElasticLoadBalancingV2::Listener
+      Type: AWS::ElasticLoadBalancingV2::Listener
+      Properties:  
         Port: 80
         Protocol: HTTP
         LoadBalancerArn: !Ref ALB
@@ -157,36 +157,34 @@ Resources:
   # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-listener.html
     Type: AWS::ElasticLoadBalancingV2::ListenerRule
     Properties:
-      ListenerArn: !Ref HTTPSListener
-      Actions:
-        - Action
-        - Type: forward
-          TargetGroupArn: !Ref BackendTG
       Conditions:
         - Field: host-header
           HostHeaderConfig: 
             Values:
               - api.thecloudproject.store
+      Actions:
+        - Type: forward
+          TargetGroupArn: !Ref BackendTG
+      ListenerArn: !Ref HTTPSListener
       Priority: 1
-
 
   ALBSG:
     # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ec2-security-group.html
     Type: AWS::EC2::SecurityGroup
     Properties:
-    GroupName: !Sub "${AWS::StackName}AlbSG"
-    GroupDescription: Public Facing SG for our Cruddur ALB
-    SecurityGroupIngress:
-      - IpProtocol: tcp
-        FromPort: 443
-        ToPort: 443
-        CidrIp: '0.0.0.0/0'
-        Description: Internet HTTPS
-      - IpProtocol: tcp
-        FromPort: 80
-        ToPort: 80
-        CidrIp: '0.0.0.0/0'
-        Description: Internet HTTP
+      GroupName: !Sub "${AWS::StackName}AlbSG"
+      GroupDescription: Public Facing SG for our Cruddur ALB
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: '0.0.0.0/0'
+          Description: Internet HTTPS
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: '0.0.0.0/0'
+          Description: Internet HTTP
 
   BackendTG:
   # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-targetgroup.html
@@ -210,7 +208,12 @@ Resources:
       TargetGroupAttributes:
         - Key: deregistration_delay.timeout_seconds
           Value: 0
-      VpcId: CROSS_REFERENCE_STACK
+      VpcId:
+        Fn::ImportValue:
+          !Sub ${NetworkingStack}VpcId
+      Tags:
+        - Key: target-group-name
+          Value: backend
       
   FrontendTG:
   # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-targetgroup.html
@@ -237,8 +240,4 @@ Resources:
       VpcId: 
         Fn::ImportValue:
           !Sub ${NetworkingStack}VpcId
-
-
-
-
 # Outputs: 
