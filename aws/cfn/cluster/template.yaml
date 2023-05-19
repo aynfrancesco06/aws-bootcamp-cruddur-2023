@@ -6,9 +6,8 @@ Description: |
   - Application Load Balancer (ALB)
     - ipv4 only
     - internet facing
+    - Certificate attached from Amazon Certificate Manager (ACM)
   - ALB Security Group
-    - 
-    - 
   - HTTPS Listener
     - Send naked domain to Frontend Target Group
     - Send api. subdomain to backend Target Group
@@ -84,9 +83,9 @@ Resources:
       ClusterName: !Sub "${AWS::StackName}Cluster"
       CapacityProviders:
         - FARGATE
-      ClusterSettings:
-        - Name: containerInsights
-          Value: disabled
+     # ClusterSettings:
+     #   - Name: containerInsights
+     #     Value: disabled
       Configuration:
         ExecuteCommandConfiguration:
           # KmsKeyId: !Ref KmsKeyId
@@ -102,12 +101,12 @@ Resources:
       IpAddressType: ipv4
       Scheme: internet-facing
       SecurityGroups:
-        - !Ref ALBSG
+        - !GetAtt ALBSG.GroupId
       Subnets:
         Fn::Split:
           - ","
           - Fn::ImportValue:
-              !Sub "${NetworkingStack}SubnetIds"
+              !Sub "${NetworkingStack}PublicSubnetIds"
       LoadBalancerAttributes:
         - Key: routing.http2.enabled
           Value: true
@@ -174,6 +173,9 @@ Resources:
     Properties:
       GroupName: !Sub "${AWS::StackName}AlbSG"
       GroupDescription: Public Facing SG for our Cruddur ALB
+      VpcId:
+        Fn::ImportValue:
+          !Sub ${NetworkingStack}VpcId
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 443

@@ -12,11 +12,6 @@ REGION=$(cfn-toml key deploy.region -t $CONFIG_PATH)
 STACK_NAME=$(cfn-toml key deploy.stack_name -t $CONFIG_PATH)
 PARAMETERS=$(cfn-toml params v2 -t $CONFIG_PATH)
 
-echo $BUCKET
-echo $REGION
-echo $STACK_NAME 
-echo $PARAMETERS
-
 aws cloudformation deploy --stack-name $STACK_NAME \
     --template-file $CFN_PATH \
     --s3-bucket $BUCKET \
