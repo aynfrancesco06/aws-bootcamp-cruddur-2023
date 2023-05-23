@@ -44,6 +44,9 @@ tasks:
       cd thumbing-serverless-cdk
       cp .env.example .env
       npm i
+  - name: cfn-toml
+    before: | 
+      gem install cfn-toml
 vscode:
   extensions:
     - 42Crunch.vscode-openapi

@@ -1,4 +1,4 @@
 [deploy]
 bucket = 'cfn-project-artifact'
 region = 'us-east-1'
-stack_name = 'CruddurCluster'
+stack_name = 'CruddurServiceBackendFlask'
