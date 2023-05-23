@@ -78,16 +78,17 @@ Resources:
       GroupDescription: Public Facing SG for our Cruddur ALB
       VpcId:
         Fn::ImportValue:
-          !Sub ${ClusterStack}VpcId
+          !Sub ${NetworkingStack}VpcId
       SecurityGroupIngress:
         - IpProtocol: tcp
           SourceSecurityGroupId:
             Fn::ImportValue:
-              !Sub ${ClusterStack}ALBSecurityGroupId
+              !Sub ${ClusterStack}ServiceSecurityGroupId
           FromPort: 80
           ToPort: 80
           #CidrIp: '0.0.0.0/0'
           Description: ALB HTTP
+          
   FargateService:
     Type: AWS::ECS::Service
     Properties:
@@ -101,9 +102,11 @@ Resources:
       HealthCheckGracePeriodSeconds: 0
       LaunchType: FARGATE
       LoadBalancers:
-       - TargetGroupArn: 'arn:aws:elasticloadbalancing:us-east-1:655967166151:targetgroup/cruddur-backend-flask-tg/a0fad8aab552e182'
-         ContainerName: 'backend-flask'
-         ContainerPort: !Ref ContainerPort
+        - TargetGroupArn:
+            Fn::ImportValue:
+              !Sub "${ClusterStack}BackendTGArn"
+          ContainerName: 'backend-flask'
+          ContainerPort: !Ref ContainerPort
       NetworkConfiguration:
         AwsvpcConfiguration:
           AssignPublicIp: ENABLED
@@ -130,7 +133,7 @@ Resources:
       Family: !Ref TaskFamily
       ExecutionRoleArn: !GetAtt ExecutionRole.Arn
       TaskRoleArn: !GetAtt TaskRole.Arn
-      NetworkMode: awsvpc
+      NetworkMode: 'awsvpc'
       Cpu: !Ref ServiceCpu
       Memory: !Ref ServiceMemory
       RequiresCompatibilities:
@@ -231,7 +234,6 @@ Resources:
               Service: 'ecs-tasks.amazonaws.com'
             Action: 'sts:AssumeRole'
       ManagedPolicyArns:
-        - !Sub "arn:aws:iam::${AWS::AccountId}:policy/${!Ref ExecutionRolePolicy}"
         - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
 
   TaskRole:
@@ -261,3 +263,9 @@ Resources:
       ManagedPolicyArns:
         - "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
         - "arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess"
+
+Outputs:
+  ServiceSecurityGroupId:
+    Value: !GetAtt ServiceSG.GroupId
+    Export:
+      Name: !Sub "${AWS::StackName}ServiceSecurityGroupId"

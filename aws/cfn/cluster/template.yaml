@@ -113,7 +113,7 @@ Resources:
         - Key: routing.http.preserve_host_header.enabled
           Value: false
         - Key: deletion_protection.enabled
-          Value: true
+          Value: false
         - Key: load_balancing.cross_zone.enabled
           Value: true
         - Key: access_logs.s3.enabled
@@ -151,7 +151,6 @@ Resources:
               Path: "/#{path}"
               Query: "#{query}"
               StatusCode: "HTTP_301"
-            TargetGroupArn: !Ref FrontendTG
   ApiALBListenerRule:
   # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-listener.html
     Type: AWS::ElasticLoadBalancingV2::ListenerRule
@@ -187,6 +186,25 @@ Resources:
           ToPort: 80
           CidrIp: '0.0.0.0/0'
           Description: Internet HTTP
+
+  # We have to create this SG before the service so we can pass it to database SG
+  ServiceSG:
+    # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ec2-security-group.html
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Sub "${AWS::StackName}ServSG"
+      GroupDescription: Security for Fargate Services for Cruddur
+      VpcId:
+        Fn::ImportValue:
+          !Sub ${NetworkingStack}VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          SourceSecurityGroupId: !GetAtt ALBSG.GroupId
+          FromPort: !Ref BackendPort
+          ToPort: !Ref BackendPort
+          Description: ALB HTTP
+
+
 
   BackendTG:
   # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-elasticloadbalancingv2-targetgroup.html
@@ -242,12 +260,21 @@ Resources:
       VpcId: 
         Fn::ImportValue:
           !Sub ${NetworkingStack}VpcId
+
 Outputs: 
   ClusterName:
     Value: !Ref FargateCluster
     Export:
       Name: !Sub "${AWS::StackName}ClusterName"
-  ALBSecurityGroupId:
-    Value: !GetAtt ALBSG.GroupId
+  ServiceSecurityGroupId:
+    Value: !GetAtt ServiceSG.GroupId
     Export:
-      Name: !Sub "${AWS::StackName}ALBSecurityGroupId"
+      Name: !Sub "${AWS::StackName}ServiceSecurityGroupId"
+  FrontendTGArn:
+    Value: !Ref FrontendTG
+    Export:
+      Name: !Sub "${AWS::StackName}FrontendTGArn"
+  BackendTGArn:
+    Value: !Ref BackendTG
+    Export:
+      Name: !Sub "${AWS::StackName}BackendTGArn"
