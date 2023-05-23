@@ -37,37 +37,37 @@ Parameters:
     Default: backend-flask
   EnvOtelServiceName:
     Type: String
-    Value: backend-flask
+    Default: backend-flask
   EnvOtelExporterOtlpEndpoint:
     Type: String
-    Value: "https://api.honeycomb.io"
+    Default: "https://api.honeycomb.io"
   EnvAWSCognitoUserPoolId:
     Type: String
-    Value: "us-east-1_y4wlnfhYp"
+    Default: "us-east-1_y4wlnfhYp"
   EnvCognitoUserPoolClientId:
     Type: String
-    Value: "3no4tfio3drtmd69tnf8ail3a7"
+    Default: "3no4tfio3drtmd69tnf8ail3a7"
   EnvFrontendUrl:
     Type: String
-    Value: "*"
+    Default: "*"
   EnvBackendUrl:
     Type: String
-    Value: "*"
+    Default: "*"
   SecretsAWSAccessKeyId:
     Type: String
-    Value: arn:aws:ssm:us-east-1:655967166151:parameter/cruddur/backend-flask/AWS_ACCESS_KEY_ID
+    Default: arn:aws:ssm:us-east-1:655967166151:parameter/cruddur/backend-flask/AWS_ACCESS_KEY_ID
   SecretsSecretAccessKey:
     Type: String
-    Value: arn:aws:ssm:us-east-1:655967166151:parameter/cruddur/backend-flask/AWS_SECRET_ACCESS_KEY
+    Default: arn:aws:ssm:us-east-1:655967166151:parameter/cruddur/backend-flask/AWS_SECRET_ACCESS_KEY
   SecretsConnectionUrl:
     Type: String
-    Value: arn:aws:ssm:us-east-1:655967166151:parameter/cruddur/backend-flask/CONNECTION_URL 
+    Default: arn:aws:ssm:us-east-1:655967166151:parameter/cruddur/backend-flask/CONNECTION_URL 
   SecretsRollbarAccessToken:
     Type: String
-    Value: arn:aws:ssm:us-east-1:655967166151:parameter/cruddur/backend-flask/ROLLBAR_ACCESS_TOKEN
+    Default: arn:aws:ssm:us-east-1:655967166151:parameter/cruddur/backend-flask/ROLLBAR_ACCESS_TOKEN
   SecretsOtelExporterOltpHeaders:
     Type: String
-    Value: arn:aws:ssm:us-east-1:655967166151:parameter/cruddur/backend-flask/OTEL_EXPORTER_OTLP_HEADERS
+    Default: arn:aws:ssm:us-east-1:655967166151:parameter/cruddur/backend-flask/OTEL_EXPORTER_OTLP_HEADERS
 
 Resources:
   ServiceSG:
@@ -86,20 +86,19 @@ Resources:
               !Sub ${ClusterStack}ALBSecurityGroupId
           FromPort: 80
           ToPort: 80
-          CidrIp: '0.0.0.0/0'
+          #CidrIp: '0.0.0.0/0'
           Description: ALB HTTP
   FargateService:
     Type: AWS::ECS::Service
     Properties:
       Cluster:
-        - Fn::ImportValue:
-            !Sub "${ClusterStack}ClusterName"
-      DeploymentConfiguration:
+        Fn::ImportValue: !Sub "${ClusterStack}ClusterName"
       DeploymentController:
-      DesiredCount:
+        Type: ECS 
+      DesiredCount: 1
       EnableECSManagedTags: true
-      EnableExecuteCommmand: true
-      HealthCheckGracePeriodSeconds:
+      EnableExecuteCommand: true
+      HealthCheckGracePeriodSeconds: 0
       LaunchType: FARGATE
       LoadBalancers:
        - TargetGroupArn: 'arn:aws:elasticloadbalancing:us-east-1:655967166151:targetgroup/cruddur-backend-flask-tg/a0fad8aab552e182'
@@ -122,16 +121,15 @@ Resources:
           Port: !Ref ContainerPort
           ContainerName: 'backend-flask'
           ContainerPort: !Ref ContainerPort
-          ContainerPortProtocol: tcp
       ServiceName: !Ref ServiceName
-      TaskDefinition: !Ref TaskFamily
+      TaskDefinition: !Ref TaskDefinition
 
   TaskDefinition:
     Type: 'AWS::ECS::TaskDefinition'
     Properties:
-      Family: backend-flask
-      ExecutionRoleArn: !Ref ExecutionRole
-      TaskRoleArn: !Ref TaskRole
+      Family: !Ref TaskFamily
+      ExecutionRoleArn: !GetAtt ExecutionRole.Arn
+      TaskRoleArn: !GetAtt TaskRole.Arn
       NetworkMode: awsvpc
       Cpu: !Ref ServiceCpu
       Memory: !Ref ServiceMemory
@@ -166,7 +164,7 @@ Resources:
             LogDriver: 'awslogs'
             Options:
               awslogs-group: 'cruddur'
-              awslogs-region: 'us-east-1'
+              awslogs-region: !Ref AWS::Region
               awslogs-stream-prefix: !Ref ServiceName
           Environment:
             - Name: OTEL_SERVICE_NAME
@@ -182,7 +180,7 @@ Resources:
             - Name: BACKEND_URL
               Value: !Ref EnvBackendUrl
             - Name: AWS_DEFAULT_REGION
-              Value: ${AWS::Region}
+              Value: !Ref AWS::Region
           Secrets:
             - Name: AWS_ACCESS_KEY_ID
               ValueFrom: !Ref SecretsAWSAccessKeyId
@@ -195,26 +193,12 @@ Resources:
             - Name: OTEL_EXPORTER_OTLP_HEADERS
               ValueFrom: !Ref SecretsOtelExporterOltpHeaders
 
-  ExecutionRole:
-    Type: 'AWS::IAM::Role'
-    Properties:
-      RoleName: 'CruddurServiceExecutionRole'
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: 'Allow'
-            Principal:
-              Service: 'ecs-tasks.amazonaws.com'
-            Action: 'sts:AssumeRole'
-      ManagedPolicyArns:
-        - !Sub "arn:aws:iam::${AWS::AccountId}:policy/CruddurServiceExecutionPolicy"
-        - "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
-
-
-  CruddurServiceExecutionPolicy:
+  ExecutionRolePolicy:
     Type: 'AWS::IAM::Policy'
     Properties:
       PolicyName: 'cruddur-execution-policy'
+      Roles:
+        - !Ref ExecutionRole
       PolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -234,9 +218,22 @@ Resources:
               - ssm:GetParameters
               - ssm:GetParameter
             Resource: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/cruddur/${ServiceName}/*'
-      Roles:
-        - !Ref IAMRole
-  
+
+  ExecutionRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: CruddurServiceExecutionRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Principal:
+              Service: 'ecs-tasks.amazonaws.com'
+            Action: 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - !Sub "arn:aws:iam::${AWS::AccountId}:policy/${!Ref ExecutionRolePolicy}"
+        - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+
   TaskRole:
     Type: AWS::IAM::Role
     Properties: 
@@ -248,23 +245,19 @@ Resources:
             Principal:
               Service: 'ecs-tasks.amazonaws.com'
             Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: 'cruddur-task-policy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Sid: 'VisualEditor0'
+                Effect: 'Allow'
+                Action:
+                  - ssmmessages:CreateControlChannel,
+                  - ssmmessages:CreateDataChannel,
+                  - ssmmessages:OpenControlChannel,
+                  - ssmmessages:OpenDataChannel,
+                Resource: '*'
       ManagedPolicyArns:
-        - !Sub "arn:aws:iam::${AWS::AccountId}:policy/${!Ref TaskPolicy}"
         - "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
         - "arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess"
-  
-  TaskPolicy:
-    Type: AWS::IAM::Policy
-    Properties:
-      PolicyName: 'cruddur-task-policy'
-      PolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Sid: 'VisualEditor0'
-            Effect: 'Allow'
-            Action:
-              - ssmmessages:CreateControlChannel,
-              - ssmmessages:CreateDataChannel,
-              - ssmmessages:OpenControlChannel,
-              - ssmmessages:OpenDataChannel,
-            Resource: '*'
