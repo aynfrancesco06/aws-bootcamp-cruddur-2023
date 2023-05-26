@@ -119,11 +119,11 @@ Resources:
                   !Sub "${NetworkingStack}PublicSubnetIds"
       PlatformVersion: LATEST
       PropagateTags: SERVICE
-      ServiceRegistries:
-        - RegistryArn: !Sub "arn:${AWS::Partition}:servicediscovery:${AWS::Region}:${AWS::AccountId}:namespace/cruddur"
-          Port: !Ref ContainerPort
-          ContainerName: 'backend-flask'
-          ContainerPort: !Ref ContainerPort
+      # ServiceRegistries:
+      #   - RegistryArn: !Sub "arn:${AWS::Partition}:servicediscovery:${AWS::Region}:${AWS::AccountId}:namespace/cruddur"
+      #     Port: !Ref ContainerPort
+      #     ContainerName: 'backend-flask'
+      #     ContainerPort: !Ref ContainerPort
       ServiceName: !Ref ServiceName
       TaskDefinition: !Ref TaskDefinition
 
