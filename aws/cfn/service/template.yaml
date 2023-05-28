@@ -99,7 +99,7 @@ Resources:
       DesiredCount: 1
       EnableECSManagedTags: true
       EnableExecuteCommand: true
-      HealthCheckGracePeriodSeconds: 0
+      HealthCheckGracePeriodSeconds: 100
       LaunchType: FARGATE
       LoadBalancers:
         - TargetGroupArn:
@@ -119,6 +119,16 @@ Resources:
                   !Sub "${NetworkingStack}PublicSubnetIds"
       PlatformVersion: LATEST
       PropagateTags: SERVICE
+      ServiceConnectConfiguration:
+        Enabled: true
+        Namespace: "cruddur"
+        # IF LOGGING IS WANTED
+        # Log Configuration 
+        Services:
+          - DiscoveryName: backend-flask
+            PortName: backend-flask
+            ClientAliases:
+              - Port: !Ref ContainerPort
       # ServiceRegistries:
       #   - RegistryArn: !Sub "arn:${AWS::Partition}:servicediscovery:${AWS::Region}:${AWS::AccountId}:namespace/cruddur"
       #     Port: !Ref ContainerPort

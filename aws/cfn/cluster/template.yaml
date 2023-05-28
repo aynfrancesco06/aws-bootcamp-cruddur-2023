@@ -262,6 +262,9 @@ Resources:
       VpcId: 
         Fn::ImportValue:
           !Sub ${NetworkingStack}VpcId
+      Tags:
+        - Key: target-group-name
+          Value: frontend
 
 Outputs: 
   ClusterName:
