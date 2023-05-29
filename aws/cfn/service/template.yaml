@@ -70,24 +70,6 @@ Parameters:
     Default: arn:aws:ssm:us-east-1:655967166151:parameter/cruddur/backend-flask/OTEL_EXPORTER_OTLP_HEADERS
 
 Resources:
-  ServiceSG:
-    # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ec2-security-group.html
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupName: !Sub "${AWS::StackName}AlbSG"
-      GroupDescription: Public Facing SG for our Cruddur ALB
-      VpcId:
-        Fn::ImportValue:
-          !Sub ${NetworkingStack}VpcId
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          SourceSecurityGroupId:
-            Fn::ImportValue:
-              !Sub ${ClusterStack}ServiceSecurityGroupId
-          FromPort: 80
-          ToPort: 80
-          #CidrIp: '0.0.0.0/0'
-          Description: ALB HTTP
           
   FargateService:
     Type: AWS::ECS::Service

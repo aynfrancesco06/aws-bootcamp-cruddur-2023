@@ -204,6 +204,17 @@ Resources:
           ToPort: !Ref BackendPort
           Description: ALB HTTP
 
+        #   FromPort: 443
+        #   ToPort: 443
+        #   CidrIp: '0.0.0.0/0'
+        #   Description: INTERNET HTTPS
+        # - IpProtocol: tcp
+        #   FromPort: 80
+        #   ToPort: 80
+        #   CidrIp: '0.0.0.0/0'
+        #   Description: INTERNET HTTP
+          
+          
 
 
   BackendTG:
@@ -275,6 +286,10 @@ Outputs:
     Value: !GetAtt ServiceSG.GroupId
     Export:
       Name: !Sub "${AWS::StackName}ServiceSecurityGroupId"
+  ALBSecurityGroupId:
+    Value: !GetAtt  ALBSG.GroupId
+    Export:
+      Name: !Sub "${AWS::StackName}ALBSecurityGroupId"
   FrontendTGArn:
     Value: !Ref FrontendTG
     Export:
