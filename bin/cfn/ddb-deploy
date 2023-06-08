@@ -1,26 +1,45 @@
 #! /usr/bin/env bash
 set -e #stop script execution if failed
 
-CFN_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/ddb/template.yaml"
-CONFIG_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/ddb/config.toml"
-#take a template, will name it "my-cluster", no-execute-changeset will enable us to review the changes in the template
+ FUNC_DIR="/workspace/aws-bootcamp-cruddur-2023/aws/lambdas/cruddur-messaging-stream/"
+ TEMPLATE_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/ddb/template.yaml"
+ CONFIG_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/ddb/config.toml"
+ ARTIFACT_BUCKET="cfn-artifacts"
 
-cfn-lint $CFN_PATH
+# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-build.html
+sam build \
+--config-file $CONFIG_PATH \
+--template $TEMPLATE_PATH \
+--build-dir $FUNC_DIR \
+--base-dir $FUNC_DIR
 
-BUCKET=$(cfn-toml key deploy.bucket -t $CONFIG_PATH)
-REGION=$(cfn-toml key deploy.region -t $CONFIG_PATH)
-STACK_NAME=$(cfn-toml key deploy.stack_name -t $CONFIG_PATH)
-#PARAMETERS=$(cfn-toml params v2 -t $CONFIG_PATH)
+sam package \
+--s3-bucket $ARTIFACT_BUCKET
 
-aws cloudformation deploy --stack-name $STACK_NAME \
-    --template-file $CFN_PATH \
-    --s3-bucket $BUCKET \
-    --s3-prefix cluster \
-    --region $REGION \
-    --template-file "$CFN_PATH" \
-    --no-execute-changeset \
-    --tags group=cruddur-ddb \
-    --capabilities CAPABILITY_NAMED_IAM \
-    --parameter-overrides $PARAMETERS MasterUserPassword=$DB_PASSWORD
+#sam deploy
 
-#permission related
+
+
+# CFN_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/ddb/template.yaml"
+# CONFIG_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/ddb/config.toml"
+# #take a template, will name it "my-cluster", no-execute-changeset will enable us to review the changes in the template
+
+# cfn-lint $CFN_PATH
+
+# BUCKET=$(cfn-toml key deploy.bucket -t $CONFIG_PATH)
+# REGION=$(cfn-toml key deploy.region -t $CONFIG_PATH)
+# STACK_NAME=$(cfn-toml key deploy.stack_name -t $CONFIG_PATH)
+# #PARAMETERS=$(cfn-toml params v2 -t $CONFIG_PATH)
+
+# aws cloudformation deploy --stack-name $STACK_NAME \
+#     --template-file $CFN_PATH \
+#     --s3-bucket $BUCKET \
+#     --s3-prefix cluster \
+#     --region $REGION \
+#     --template-file "$CFN_PATH" \
+#     --no-execute-changeset \
+#     --tags group=cruddur-ddb \
+#     --capabilities CAPABILITY_NAMED_IAM \
+#     --parameter-overrides $PARAMETERS MasterUserPassword=$DB_PASSWORD
+
+# #permission related

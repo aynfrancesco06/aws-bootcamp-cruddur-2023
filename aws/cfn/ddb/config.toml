@@ -1,9 +1,9 @@
-[deploy]
-bucket = 'cfn-project-artifact'
-region = 'us-east-1'
-stack_name = 'CruddurDdb'
+version=0.1
+[default.build.parameters]
+region = "us-east-1"
 
-[parameters]
-NetworkingStack='CruddurNetwork'
-ClusterStack='CruddurCluster'
-MasterUsername = 'cruddurroot'
+[default.package.parameters]
+region = "us-east-1"
+
+[default.deploy.parameters]
+region = "us-east-1"
