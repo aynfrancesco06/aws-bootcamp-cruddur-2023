@@ -15,7 +15,7 @@ PARAMETERS=$(cfn-toml params v2 -t $CONFIG_PATH)
 aws cloudformation deploy --stack-name $STACK_NAME \
     --template-file $CFN_PATH \
     --s3-bucket $BUCKET \
-    --s3-prefix cluster \
+    --s3-prefix db \
     --region $REGION \
     --template-file "$CFN_PATH" \
     --no-execute-changeset \

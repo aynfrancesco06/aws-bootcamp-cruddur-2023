@@ -15,6 +15,7 @@ PARAMETERS=$(cfn-toml params v2 -t $CONFIG_PATH)
 aws cloudformation deploy --stack-name $STACK_NAME \
     --template-file $CFN_PATH \
     --region $REGION \
+    --s3-prefix networking \
     --s3-bucket $BUCKET \
     --no-execute-changeset \
     --tags group=cruddur-network \

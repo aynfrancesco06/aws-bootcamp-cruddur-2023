@@ -18,6 +18,7 @@ Parameters:
   DeletionProtectionEnabled:
     Type: String
     Default: false
+
 Resources:
   DynamoDBTable:
     Type: AWS::DynamoDB::Table
@@ -58,7 +59,7 @@ Resources:
   ProcessDynamoDBStream:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: ProcessDynamoDBStream
+      CodeUri: aws/lambdas/cruddur-messaging-stream
       PackageType: Zip
       Handler: lambda_handler
       Runtime:
