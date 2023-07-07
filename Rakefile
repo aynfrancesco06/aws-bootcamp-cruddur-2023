@@ -10,7 +10,7 @@ task :sync do
     s3_bucket:             ENV["S3_BUCKET"],
     distribution_id:       ENV["CLOUDFRONT_DISTRUBTION_ID"],
     build_dir:             ENV["BUILD_DIR"],
-    output_changset_path:  ENV["OUTPUT_CHANGESET_PATH"],
+    output_changeset_path:  ENV["OUTPUT_CHANGESET_PATH"],
     auto_approve:          ENV["AUTO_APPROVE"],
     silent: "ignore,no_change",
     ignore_files: [
