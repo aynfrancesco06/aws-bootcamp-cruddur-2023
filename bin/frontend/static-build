@@ -1,0 +1,22 @@
+#! /usr/bin/bash
+
+ABS_PATH=$(readlink -f "$0")
+BUILD_PATH=$(dirname $ABS_PATH)
+DOCKER_PATH=$(dirname $BUILD_PATH)
+BIN_PATH=$(dirname $DOCKER_PATH)
+FRONTEND_REACT_JS_PATH="$BIN_PATH/frontend-react-js"
+
+echo $ABS_PATH
+echo $BUILD_PATH
+echo $DOCKER_PATH
+echo $BIN_PATH
+echo $FRONTEND_REACT_JS_PATH
+
+cd $FRONTEND_REACT_JS_PATH
+
+REACT_APP_BACKEND_URL="https://api.thecloudproject.store" \
+REACT_APP_AWS_PROJECT_REGION="$AWS_DEFAULT_REGION" \
+REACT_APP_AWS_COGNITO_REGION="$AWS_DEFAULT_REGION" \
+REACT_APP_AWS_USER_POOLS_ID="us-east-1_y4wlnfhYp" \
+REACT_APP_CLIENT_ID="3no4tfio3drtmd69tnf8ail3a7" \
+npm run build
