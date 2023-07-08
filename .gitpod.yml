@@ -27,6 +27,7 @@ tasks:
       sudo apt update
       sudo apt install -y postgresql-client-13 libpq-dev
       export GITPOD_IP=$(curl ifconfig.me)
+      gp env GITPOD_IP=$(curl ifconfig.me)
       source "$THEIA_WORKSPACE_ROOT/bin/rds/update-sg-rule"
   - name: react-js
     command: |
