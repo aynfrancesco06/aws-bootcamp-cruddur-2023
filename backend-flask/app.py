@@ -203,10 +203,10 @@ def data_update_profile():
 @app.route("/api/messages", methods=['POST','OPTIONS'])
 @cross_origin()
 def data_create_message():
-  access_token = extract_access_token(request.headers)
   user_receiver_handle = request.json.get('handle',None)
   message_group_uuid = request.json.get('message_group_uuid',None)
   message = request.json['message']
+  access_token = extract_access_token(request.headers)
   try:
     claims = cognito_jwt_token.verify(access_token)
     app.logger.debug('token is authenticated')
@@ -287,15 +287,21 @@ def data_search():
 @app.route("/api/activities", methods=['POST','OPTIONS'])
 @cross_origin()
 def data_activities():
-  user_handle = 'TheChosenOne'
-  message = request.json['message']
-  ttl = request.json['ttl']
-  model = CreateActivity.run(message, user_handle, ttl)
-  if model['errors'] is not None:
-    return model['errors'], 422
-  else:
-    return model['data'], 200
-  return
+  access_token = extract_access_token(request.headers)
+  try:
+    claims = cognito_jwt_token.verify(access_token)
+    cognito_user_id = claims['sub']
+    message = request.json['message']
+    ttl = request.json['ttl']
+    model = CreateActivity.run(message, cognito_user_id, ttl)
+    if model['errors'] is not None:
+      return model['errors'], 422
+    else:
+      return model['data'], 200
+  except TokenVerifyError as e:
+    # unauthenticated request
+    app.logger.debug(e)
+    return {}, 401
 
 @app.route("/api/activities/<string:activity_uuid>", methods=['GET'])
 @xray_recorder.capture('activities_show')

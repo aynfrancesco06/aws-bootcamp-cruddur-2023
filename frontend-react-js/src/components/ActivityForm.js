@@ -1,6 +1,7 @@
 import './ActivityForm.css';
 import React from "react";
 import process from 'process';
+import {checkAuth, getAccessToken} from '../lib/CheckAuth';
 import {ReactComponent as BombIcon} from './svg/bomb.svg';
 
 export default function ActivityForm(props) {
@@ -19,9 +20,12 @@ export default function ActivityForm(props) {
     try {
       const backend_url = `${process.env.REACT_APP_BACKEND_URL}/api/activities`
       console.log('onsubmit payload', message)
+      await getAccessToken()
+      const access_token = localStorage.getItem("access_token")
       const res = await fetch(backend_url, {
         method: "POST",
         headers: {
+          'Authorization': `Bearer ${access_token}`,
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
