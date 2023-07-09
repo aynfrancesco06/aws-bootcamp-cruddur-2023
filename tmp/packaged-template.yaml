@@ -93,7 +93,7 @@ Resources:
           InputArtifacts:
           - Name: ImageDefinition
           Configuration:
-            DeploymentTimeout: '10'
+            DeploymentTimeout: '20'
             ClusterName:
               Fn::ImportValue:
                 Fn::Sub: ${ClusterStack}ClusterName
