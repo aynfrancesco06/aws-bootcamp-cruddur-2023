@@ -81,7 +81,7 @@ Resources:
       DesiredCount: 1
       EnableECSManagedTags: true
       EnableExecuteCommand: true
-      HealthCheckGracePeriodSeconds: 100
+      HealthCheckGracePeriodSeconds: 0
       LaunchType: FARGATE
       LoadBalancers:
         - TargetGroupArn:
@@ -189,34 +189,9 @@ Resources:
             - Name: OTEL_EXPORTER_OTLP_HEADERS
               ValueFrom: !Ref SecretsOtelExporterOltpHeaders
 
-  ExecutionRolePolicy:
-    Type: 'AWS::IAM::Policy'
-    Properties:
-      PolicyName: 'cruddur-execution-policy'
-      Roles:
-        - !Ref ExecutionRole
-      PolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Sid: VisualEditor0
-            Effect: Allow
-            Action:
-              - ecr:GetAuthorizationToken
-              - ecr:BatchCheckLayerAvailability
-              - ecr:GetDownloadUrlForLayer
-              - ecr:BatchGetImage
-              - logs:CreateLogStream
-              - logs:PutLogEvents
-            Resource: '*'
-          - Sid: VisualEditor1
-            Effect: Allow
-            Action:
-              - ssm:GetParameters
-              - ssm:GetParameter
-            Resource: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/cruddur/${ServiceName}/*'
-
   ExecutionRole:
-    Type: 'AWS::IAM::Role'
+    # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html
+    Type: AWS::IAM::Role
     Properties:
       RoleName: CruddurServiceExecutionRole
       AssumeRolePolicyDocument:
@@ -226,6 +201,27 @@ Resources:
             Principal:
               Service: 'ecs-tasks.amazonaws.com'
             Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: 'cruddur-execution-policy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Sid: 'VisualEditor0'
+                Effect: 'Allow'
+                Action:
+                  - 'ecr:GetAuthorizationToken'
+                  - 'ecr:BatchCheckLayerAvailability'
+                  - 'ecr:GetDownloadUrlForLayer'
+                  - 'ecr:BatchGetImage'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource: '*'
+              - Sid: 'VisualEditor1'
+                Effect: 'Allow'
+                Action:
+                  - 'ssm:GetParameters'
+                  - 'ssm:GetParameter'
+                Resource: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/cruddur/${ServiceName}/*'
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
 
