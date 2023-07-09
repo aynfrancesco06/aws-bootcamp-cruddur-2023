@@ -13,11 +13,18 @@ Parameters:
     Type: String
   ArtifactBucketName:
     Type: String
+  BuildSpec:
+    Type: String
 Resources:
   CodeBuildBakeImageStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://s3.us-east-1.amazonaws.com/cfn-project-artifact/cicd-package/4b7084f1e2ee6e930e27ef91a2fe3ab5.template
+      TemplateURL: https://s3.us-east-1.amazonaws.com/cfn-project-artifact/cicd-package/b5a1aca5a9432f20448769649b0af380.template
+      Parameters:
+        ArtifactBucketName:
+          Ref: ArtifactBucketName
+        BuildSpec:
+          Ref: BuildSpec
   CodeStarConnection:
     Type: AWS::CodeStarConnections::Connection
     Properties:
@@ -108,6 +115,17 @@ Resources:
       Path: /
       Policies:
       - PolicyName:
+          Fn::Sub: ${AWS::StackName}S3ArtifactAccess
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Action:
+            - s3:*
+            Effect: Allow
+            Resource:
+            - Fn::Sub: arn:aws:s3:::${ArtifactBucketName}
+            - Fn::Sub: arn:aws:s3:::${ArtifactBucketName}/*
+      - PolicyName:
           Fn::Sub: ${AWS::StackName}EcsDeployPolicy
         PolicyDocument:
           Version: '2012-10-17'
@@ -162,6 +180,7 @@ Resources:
             - codebuild:StartBuild
             - codebuild:StopBuild
             - codebuild:RetryBuild
+            - codebuild:BatchGetBuilds
             Effect: Allow
             Resource:
               Fn::Join:
