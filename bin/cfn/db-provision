@@ -1,0 +1,26 @@
+#! /usr/bin/env bash
+set -e #stop script execution if failed
+
+CFN_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/db/template.yaml"
+CONFIG_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/db/config.toml"
+#take a template, will name it "my-cluster", no-execute-changeset will enable us to review the changes in the template
+
+cfn-lint $CFN_PATH
+
+BUCKET=$(cfn-toml key deploy.bucket -t $CONFIG_PATH)
+REGION=$(cfn-toml key deploy.region -t $CONFIG_PATH)
+STACK_NAME=$(cfn-toml key deploy.stack_name -t $CONFIG_PATH)
+PARAMETERS=$(cfn-toml params v2 -t $CONFIG_PATH)
+
+aws cloudformation deploy --stack-name $STACK_NAME \
+    --template-file $CFN_PATH \
+    --s3-bucket $BUCKET \
+    --s3-prefix db \
+    --region $REGION \
+    --template-file "$CFN_PATH" \
+    --no-execute-changeset \
+    --tags group=cruddur-db \
+    --capabilities CAPABILITY_NAMED_IAM \
+    --parameter-overrides $PARAMETERS MasterUserPassword=$DB_PASSWORD
+
+#permission related

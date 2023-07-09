@@ -1,0 +1,176 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: "- CodeStar connection V2 Github\n- CodePipeline\n- Codebuild\n"
+Parameters:
+  GitHubBranch:
+    Type: String
+    Default: prod
+  GithubRepo:
+    Type: String
+    Default: aynfrancesco06/aws-bootcamp-cruddur-2023
+  ClusterStack:
+    Type: String
+  ServiceStack:
+    Type: String
+  ArtifactBucketName:
+    Type: String
+Resources:
+  CodeBuildBakeImageStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.us-east-1.amazonaws.com/cfn-project-artifact/cicd-package/4b7084f1e2ee6e930e27ef91a2fe3ab5.template
+  CodeStarConnection:
+    Type: AWS::CodeStarConnections::Connection
+    Properties:
+      ConnectionName:
+        Fn::Sub: ${AWS::StackName}-connection
+      ProviderType: GitHub
+  Pipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      ArtifactStore:
+        Location:
+          Ref: ArtifactBucketName
+        Type: S3
+      RoleArn:
+        Fn::GetAtt:
+        - CodePipelineRole
+        - Arn
+      Stages:
+      - Name: Source
+        Actions:
+        - Name: ApplicationSource
+          RunOrder: 1
+          ActionTypeId:
+            Category: Source
+            Provider: CodeStarSourceConnection
+            Owner: AWS
+            Version: '1'
+          OutputArtifacts:
+          - Name: Source
+          Configuration:
+            ConnectionArn:
+              Ref: CodeStarConnection
+            FullRepositoryId:
+              Ref: GithubRepo
+            BranchName:
+              Ref: GitHubBranch
+            OutputArtifactFormat: CODE_ZIP
+      - Name: Build
+        Actions:
+        - Name: BuildContainerImage
+          RunOrder: 1
+          ActionTypeId:
+            Category: Build
+            Owner: AWS
+            Provider: CodeBuild
+            Version: '1'
+          InputArtifacts:
+          - Name: Source
+          OutputArtifacts:
+          - Name: ImageDefinition
+          Configuration:
+            ProjectName:
+              Fn::GetAtt:
+              - CodeBuildBakeImageStack
+              - Outputs.CodeBuildProjectName
+            BatchEnabled: false
+      - Name: Deploy
+        Actions:
+        - Name: Deploy
+          RunOrder: 1
+          ActionTypeId:
+            Category: Deploy
+            Provider: ECS
+            Owner: AWS
+            Version: '1'
+          InputArtifacts:
+          - Name: ImageDefinition
+          Configuration:
+            DeploymentTimeout: '10'
+            ClusterName:
+              Fn::ImportValue:
+                Fn::Sub: ${ClusterStack}ClusterName
+            ServiceName:
+              Fn::ImportValue:
+                Fn::Sub: ${ServiceStack}ServiceName
+  CodePipelineRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action:
+          - sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service:
+            - codepipeline.amazonaws.com
+        Version: '2012-10-17'
+      Path: /
+      Policies:
+      - PolicyName:
+          Fn::Sub: ${AWS::StackName}EcsDeployPolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Action:
+            - ecs:DescribeServices
+            - ecs:DescribeTaskDefinition
+            - ecs:DescribeTasks
+            - ecs:ListTasks
+            - ecs:RegisterTaskDefinition
+            - ecs:UpdateService
+            Effect: Allow
+            Resource: '*'
+      - PolicyName:
+          Fn::Sub: ${AWS::StackName}CodeStarPolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Action:
+            - codestar-connections:UseConnection
+            Effect: Allow
+            Resource:
+              Ref: CodeStarConnection
+      - PolicyName:
+          Fn::Sub: ${AWS::StackName}CodePipelinePolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Action:
+            - s3:*
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            - cloudformation:*
+            - iam:PassRole
+            - iam:CreateRole
+            - iam:DetachRolePolicy
+            - iam:DeleteRolePolicy
+            - iam:PutRolePolicy
+            - iam:DeleteRole
+            - iam:AttachRolePolicy
+            - iam:GetRole
+            - iam:PassRole
+            Effect: Allow
+            Resource: '*'
+      - PolicyName:
+          Fn::Sub: ${AWS::StackName}CodePipelineBuildPolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Action:
+            - codebuild:StartBuild
+            - codebuild:StopBuild
+            - codebuild:RetryBuild
+            Effect: Allow
+            Resource:
+              Fn::Join:
+              - ''
+              - - 'arn:aws:codebuild:'
+                - Ref: AWS::Region
+                - ':'
+                - Ref: AWS::AccountId
+                - :project/
+                - Fn::GetAtt:
+                  - CodeBuildBakeImageStack
+                  - Outputs.CodeBuildProjectName

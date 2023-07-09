@@ -1,0 +1,22 @@
+#! /usr/bin/env bash
+set -e #stop script execution if failed
+
+FUNC_DIR="/workspace/aws-bootcamp-cruddur-2023/aws/lambdas/cruddur-messaging-stream/"
+TEMPLATE_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/ddb/template.yaml"
+CONFIG_PATH="/workspace/aws-bootcamp-cruddur-2023/aws/cfn/ddb/config.toml"
+ARTIFACT_BUCKET="cfn-project-artifact"
+
+
+# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-build.html
+sam build --config-file $CONFIG_PATH --template-file $TEMPLATE_PATH --base-dir $FUNC_DIR 
+
+TEMPLATE_PATH2="/workspace/aws-bootcamp-cruddur-2023/.aws-sam/build/template.yaml"
+echo $TEMPLATE_PATH
+OUTPUT_TEMPLATE_PATH="/workspace/aws-bootcamp-cruddur-2023/.aws-sam/build/packaged.yaml"
+echo $OUTPUT_TEMPLATE_PATH
+
+echo "==== SAM package..."
+ls
+
+sam package --config-file $CONFIG_PATH --s3-bucket $ARTIFACT_BUCKET --output-template-file $OUTPUT_TEMPLATE_PATH --template-file $TEMPLATE_PATH2 --s3-prefix "ddb"
+

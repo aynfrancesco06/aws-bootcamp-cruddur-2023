@@ -5,6 +5,7 @@ import os
 import sys
 
 connection_url = os.getenv("PROD_CONNECTION_URL")
+print(connection_url)
 
 conn = None
 try:

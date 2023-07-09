@@ -7,7 +7,7 @@ import DesktopSidebar     from '../components/DesktopSidebar';
 import ActivityFeed from '../components/ActivityFeed';
 import ActivityForm from '../components/ActivityForm';
 import {checkAuth, getAccessToken} from '../lib/CheckAuth';
-import EditProfileButton from '../components/EditProfileButton';
+//import EditProfileButton from '../components/EditProfileButton';
 import ProfileHeading from '../components/ProfileHeading';
 import ProfileForm from '../components/ProfileForm';
 
@@ -23,7 +23,7 @@ export default function UserFeedPage() {
   const [user, setUser] = React.useState(null);
   const dataFetchedRef = React.useRef(false);
 
-  const params = useParams();
+  //const params = useParams();
 
   const loadData = async () => {
     try {

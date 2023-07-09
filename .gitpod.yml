@@ -1,4 +1,15 @@
 tasks:
+  - name: aws-sam
+    before: |
+      cd /workspace
+      wget https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-linux-x86_64.zip
+      unzip aws-sam-cli-linux-x86_64.zip -d sam-installation
+      sudo ./sam-installation/install
+      cd $THEIA_WORKSPACE_ROOT
+  - name: aws-cfn
+    before: |
+      pip install cfn-lint
+      cargo install cfn-guard
   - name: aws-cli
     env:
       AWS_CLI_AUTO_PROMPT: on-partial
@@ -16,6 +27,7 @@ tasks:
       sudo apt update
       sudo apt install -y postgresql-client-13 libpq-dev
       export GITPOD_IP=$(curl ifconfig.me)
+      gp env GITPOD_IP=$(curl ifconfig.me)
       source "$THEIA_WORKSPACE_ROOT/bin/rds/update-sg-rule"
   - name: react-js
     command: |
@@ -40,6 +52,9 @@ tasks:
       cd thumbing-serverless-cdk
       cp .env.example .env
       npm i
+  - name: cfn-toml
+    before: | 
+      gem install cfn-toml
 vscode:
   extensions:
     - 42Crunch.vscode-openapi
