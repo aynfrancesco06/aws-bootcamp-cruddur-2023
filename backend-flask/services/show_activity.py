@@ -1,5 +1,8 @@
 from datetime import datetime, timedelta, timezone
-class ShowActivities:
+
+from lib.db import db
+
+class ShowActivity:
   def run(activity_uuid):
     now = datetime.now(timezone.utc).astimezone()
     results = [{
