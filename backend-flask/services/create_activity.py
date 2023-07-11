@@ -4,7 +4,7 @@ from lib.db import db
 
 
 class CreateActivity:
-  def run(message, cognito_user_id, ttl):
+  def run(message, cognito_user_id, activity_uuid):
     model = {
       'errors': None,
       'data': None
@@ -56,7 +56,7 @@ class CreateActivity:
   def create_activity(cognito_user_id, message, expires_at):
     sql = db.template('activities','create')
     uuid = db.query_commit(sql,{ 
-      'handle':cognito_user_id,
+      'cognito_user_id':cognito_user_id,
       'message':message,
       'expires_at':expires_at
     })
