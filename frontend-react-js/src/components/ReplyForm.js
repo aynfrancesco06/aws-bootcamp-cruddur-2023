@@ -4,10 +4,12 @@ import process from 'process';
 //import {ReactComponent as BombIcon} from './svg/bomb.svg';
 import {getAccessToken} from '../lib/CheckAuth';
 import ActivityContent  from '../components/ActivityContent';
+import FormErrors from 'components/FormErrors'
 
 export default function ReplyForm(props) {
   const [count, setCount] = React.useState(0);
   const [message, setMessage] = React.useState('');
+  const [errors, setErrors] = React.useState([]);
 
   const classes = []
   classes.push('count')
@@ -53,6 +55,7 @@ export default function ReplyForm(props) {
         console.log(res)
       }
     } catch (err) {
+      setErrors(['generic_500'])
       console.log(err);
     }
   }
@@ -98,6 +101,7 @@ export default function ReplyForm(props) {
                 <div className={classes.join(' ')}>{240-count}</div>
                 <button type='submit'>Reply</button>
               </div>
+              <FormErrors errors={errors}/>
             </form>
           </div>
         </div>
