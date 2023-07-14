@@ -52,11 +52,12 @@ export default function ReplyForm(props) {
         setMessage('')
         props.setPopped(false)
       } else {
+        setErrors('generic_500', data)
         console.log(res)
       }
     } catch (err) {
       setErrors(['generic_500'])
-      console.log(err);
+      console.log(res,data);
     }
   }
 
@@ -82,6 +83,9 @@ export default function ReplyForm(props) {
       <div className="popup_form_wrap reply_popup" onClick={close}>
         <div className="popup_form">
           <div className="popup_heading">
+            <div className="popup_title">
+              Reply to...
+            </div>
           </div>
           <div className="popup_content">
             <div className="activity_wrap">
