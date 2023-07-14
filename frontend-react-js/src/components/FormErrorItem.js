@@ -8,7 +8,7 @@ export default function FormErrorItem(props) {
           return "You are not authorized to perform this action"
           break;
         case 'generic_401':
-          return "You are not authenicated to perform this action"
+          return "You are not authenticated to perform this action"
           break;
         // Replies
         case 'cognito_user_id_blank':
