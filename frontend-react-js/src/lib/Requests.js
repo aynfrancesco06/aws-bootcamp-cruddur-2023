@@ -1,4 +1,4 @@
-import { getAccessToken } from "lib/CheckAuth";
+import { getAccessToken } from "../lib/CheckAuth";
 
 async function request(method, url, payload_data, options) {
   if (options.hasOwnProperty("setErrors")) {
@@ -57,7 +57,7 @@ export function put(url, payload_data, options) {
 }
 
 export function get(url, options) {
-  request("GET", url, null, options);
+  request("GET", url, options);
 }
 
 export function destroy(url, payload_data, options) {

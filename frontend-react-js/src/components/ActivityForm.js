@@ -1,9 +1,9 @@
 import './ActivityForm.css';
 import React from "react";
 import process from 'process';
-import {checkAuth, getAccessToken} from '../lib/CheckAuth';
+import {checkAuth} from '../lib/CheckAuth';
 import {ReactComponent as BombIcon} from './svg/bomb.svg';
-import FormErrors from "components/FormErrors";
+import FormErrors from "../components/FormErrors";
 import { post } from '../lib/Requests';
 
 
@@ -27,12 +27,16 @@ export default function ActivityForm(props) {
       ttl:ttl
     }
     
-    post(url,payload_data,function(){
-      props.setActivities(current => [data,...current]);
+    post(url,payload_data,{
+      auth:true,
+      setErrors: setErrors,
+      success: function(){
+      props.setActivities(current => [payload_data,...current]);
       setCount(0)
       setMessage('')
       setTtl('7-days')
       props.setPopped(false)
+      }  
     })
   }
 

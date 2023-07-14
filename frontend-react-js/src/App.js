@@ -11,6 +11,7 @@ import MessageGroupsPage from './pages/MessageGroupsPage';
 import MessageGroupPage from './pages/MessageGroupPage';
 import MessageGroupNewPage from './pages/MessageGroupNewPage';
 import ConfirmationPage from './pages/ConfirmationPage';
+import ActivityShowPage from './pages/ActivityShowPage'
 import React from 'react';
 import process from 'process';
  
@@ -39,45 +40,50 @@ Amplify.configure({
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <HomeFeedPage />
+    element: <HomeFeedPage />,
   },
   {
     path: "/notifications",
-    element: <NotificationsFeedPage />
+    element: <NotificationsFeedPage />,
   },
   {
-    path: "/@TheChosenOne",
-    //path: "/@:handle",
-    element: <UserFeedPage />
+    //path: "/@TheChosenOne",
+    path: "/@:handle",
+    element: <UserFeedPage />,
+  },
+  {
+    //path: "/@TheChosenOne",
+    path: "/@:handle/status/:activity_uuid",
+    element: <ActivityShowPage />,
   },
   {
     path: "/messages",
-    element: <MessageGroupsPage />
+    element: <MessageGroupsPage />,
   },
   {
     path: "/messages/new/:handle",
-    element: <MessageGroupNewPage />
+    element: <MessageGroupNewPage />,
   },
   {
     path: "/messages/:message_group_uuid",
-    element: <MessageGroupPage />
+    element: <MessageGroupPage />,
   },
   {
     path: "/signup",
-    element: <SignupPage />
+    element: <SignupPage />,
   },
   {
     path: "/signin",
-    element: <SigninPage />
+    element: <SigninPage />,
   },
   {
     path: "/confirm",
-    element: <ConfirmationPage />
+    element: <ConfirmationPage />,
   },
   {
     path: "/forgot",
-    element: <RecoverPage />
-  }
+    element: <RecoverPage />,
+  },
 ]);
 
 function App() {

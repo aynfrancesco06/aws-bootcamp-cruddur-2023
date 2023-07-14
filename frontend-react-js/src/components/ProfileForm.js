@@ -2,13 +2,14 @@ import './ProfileForm.css';
 import React from "react";
 import process from 'process';
 import {getAccessToken} from '../lib/CheckAuth';
-import {put} from 'lib/Requests';
-import FormErrors from "components/FormErrors";
+import {put} from '../lib/Requests';
+import FormErrors from "../components/FormErrors";
 
 export default function ProfileForm(props) {
   //const [presignedurl,setPresignedurl] = React.useState(0);
   const [bio, setBio] = React.useState('');
   const [displayName, setDisplayName] = React.useState('');
+  const [errors, setErrors] = React.useState([]);
 
   React.useEffect(()=>{
     setBio(props.profile.bio || '');
@@ -87,12 +88,16 @@ export default function ProfileForm(props) {
         bio:bio,
         display_name:displayName
       }
-      put(url,payload_data,function(){
+      put(url,payload_data,{
+        setErrors: setErrors,
+        auth: true,
+        success:function(){
         setBio(null);
         setDisplayName(null);
         props.setPopped(false);
-      })
-    }
+      }
+    })
+}
 
   const bio_onchange = (event) => {
     setBio(event.target.value);
