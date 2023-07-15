@@ -16,7 +16,7 @@ Parameters:
   BuildSpec:
     Type: String
 Resources:
-  CodeBuildBakeImageStack:
+  Codebuild:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: https://s3.us-east-1.amazonaws.com/cfn-project-artifact/cicd-package/b5a1aca5a9432f20448769649b0af380.template
@@ -78,7 +78,7 @@ Resources:
           Configuration:
             ProjectName:
               Fn::GetAtt:
-              - CodeBuildBakeImageStack
+              - Codebuild
               - Outputs.CodeBuildProjectName
             BatchEnabled: false
       - Name: Deploy
@@ -93,7 +93,7 @@ Resources:
           InputArtifacts:
           - Name: ImageDefinition
           Configuration:
-            DeploymentTimeout: '20'
+            DeploymentTimeout: '10'
             ClusterName:
               Fn::ImportValue:
                 Fn::Sub: ${ClusterStack}ClusterName
@@ -191,5 +191,5 @@ Resources:
                 - Ref: AWS::AccountId
                 - :project/
                 - Fn::GetAtt:
-                  - CodeBuildBakeImageStack
+                  - Codebuild
                   - Outputs.CodeBuildProjectName

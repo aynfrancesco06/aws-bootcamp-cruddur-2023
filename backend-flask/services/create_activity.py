@@ -45,18 +45,15 @@ class CreateActivity:
       }   
     else:
       expires_at = (now + ttl_offset)
-
       uuid = CreateActivity.create_activity(cognito_user_id,message,expires_at)
-
       object_json = CreateActivity.query_object_activity(uuid)
-
       model['data'] = object_json 
     return model
 
   def create_activity(cognito_user_id, message, expires_at):
     sql = db.template('activities','create')
     uuid = db.query_commit(sql,{ 
-      'handle':cognito_user_id,
+      'cognito_user_id':cognito_user_id,
       'message':message,
       'expires_at':expires_at
     })
