@@ -57,7 +57,7 @@ export function put(url, payload_data, options) {
 }
 
 export function get(url, options) {
-  request("GET", url, options);
+  request("GET", url,null, options);
 }
 
 export function destroy(url, payload_data, options) {

@@ -14,7 +14,7 @@ export default function ActivityShowItem(props) {
   attrs.className = "activity_item expanded";
   return (
     <div {...attrs}>
-      <div className="acitivty_main">
+      <div className="activity_main">
         <div className="activity_content_wrap">
           <div className="activity_content">
             <Link

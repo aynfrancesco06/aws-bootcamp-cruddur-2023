@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import {
   format_datetime,
   message_time_ago,
-  time_ago,
+  time_ago, time_future
 } from "../lib/DateTimeFormats";
 import { ReactComponent as BombIcon } from "./svg/bomb.svg";
 
@@ -16,7 +16,7 @@ export default function ActivityContent(props) {
         title={format_datetime(props.activity.expires_at)}
       >
         <BombIcon className="icon" />
-        <span className="ago">{time_ago(props.activity.expires_at)}</span>
+        <span className="ago">{time_future(props.activity.expires_at)}</span>
       </div>
     );
   }

@@ -8,7 +8,7 @@ import ActivityForm from "../components/ActivityForm";
 import ReplyForm from "../components/ReplyForm";
 import Replies from "../components/Replies";
 import ActivityShowItem from "../components/ActivityShowItem";
-import ActivityItem from "../components/ActivityItem";
+//import ActivityItem from "../components/ActivityItem";
 
 import { get } from "../lib/Requests";
 import { checkAuth } from "../lib/CheckAuth";
@@ -29,7 +29,7 @@ export default function ActivityShowPage() {
   };
 
   const loadData = async () => {
-    const url = `${process.env.REACT_APP_BACKEND_URL}/api/activities/@${params.handle}/status/${params.activity_uuid}`;
+    const url = `${process.env.REACT_APP_BACKEND_URL}/api/activities/@${params.handle}/status/${params.activity_uuid}`
     get(url, {
       auth: false,
       success: function (data) {
@@ -72,7 +72,7 @@ export default function ActivityShowPage() {
           setPopped={setPoppedReply}
         />
         <div className="activity_feed">
-          <div className="activity_feed_heading flex">
+          <div className="activity_feed_heading ">
             <div className="back" onClick={goBack}>
               &larr;
             </div>

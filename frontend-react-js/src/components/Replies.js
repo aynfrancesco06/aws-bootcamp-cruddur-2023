@@ -1,5 +1,4 @@
 import "./Replies.css";
-import './ActivityFeed.css';
 import ActivityItem from "./ActivityItem";
 
 export default function Replies(props) {
