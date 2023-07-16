@@ -20,7 +20,7 @@ export default function MessageGroupsPage() {
       get(url, {
         auth: true,
         success: function(data){
-        setMessageGroups(data)
+          setMessageGroups(data)
         }
       })
   }
