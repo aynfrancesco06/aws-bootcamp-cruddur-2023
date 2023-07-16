@@ -4,15 +4,13 @@ import ActivityItem from "./ActivityItem";
 export default function Replies(props) {
   let content;
   if (props.replies.length === 0) {
-    content = (
+    content = 
       <div className="replies_primer">
         <span>Nothing to see here yet</span>
       </div>
-    );
   } else {
-    content = (
-      <div className="activities_feed_collection">
-        {props.replies.map((activity) => {
+    content = <div className="activities_feed_collection">
+        {props.replies.map(activity => {
           return (
             <ActivityItem
               setReplyActivity={props.setReplyActivity}
@@ -23,8 +21,8 @@ export default function Replies(props) {
           );
         })}
       </div>
-    );
+    
   }
 
-  return <div>{content}</div>;
+  return (<div>{content}</div>);
 }

@@ -6,3 +6,4 @@ stack_name = 'CruddurServiceBackendFlask'
 [parameters]
 EnvFrontendUrl = 'https://thecloudproject.store'
 EnvBackendUrl = 'https://api.thecloudproject.store'
+DDBMessageTable = 'CruddurDdb-DynamoDBTable-FPVY656UU87W'

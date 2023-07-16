@@ -25,8 +25,8 @@ export default function ReplyForm(props) {
       message: message
     }
     post(url,payload_data,{
-      setErrors: setErrors,
       auth: true,
+      setErrors: setErrors,
       success: function(data){
         if (props.setReplies) {
           props.setReplies((current) => [data, ...current]);
