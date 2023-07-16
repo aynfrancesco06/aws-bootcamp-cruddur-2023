@@ -20,6 +20,7 @@ export default function MessageGroupPage() {
 
   const loadUserShortData = async () => {
       const url = `${process.env.REACT_APP_BACKEND_URL}/api/users/@${params.handle}/short`
+      console.log(url)
       get(url,{
         auth: true,
         success: function (data) {
@@ -31,6 +32,7 @@ export default function MessageGroupPage() {
 
   const loadMessageGroupsData = async () => {
       const url = `${process.env.REACT_APP_BACKEND_URL}/api/message_groups`
+      console.log(url);
       get(url,{
         auth: true,
         success: function(data){
