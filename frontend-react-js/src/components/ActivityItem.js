@@ -13,21 +13,11 @@ export default function ActivityItem(props) {
 
   const click = (event) => {
     event.preventDefault();
-    const url = `/@${props.activity.handle}/status/${props.activity.uuid}`;
-    navigate(url);
+    const url = `/@${props.activity.handle}/status/${props.activity.uuid}`
+    navigate(url)
     return false;
   }
 
-  let expanded_meta;
-  if (props.expanded === true){
-    expanded_meta = (
-      <div className='expandedMeta'>
-        <div class="created_at">
-          {format_datetime(props.activity.created_at)}
-        </div>
-      </div>
-    )
-  }
   const attrs = {}
   attrs.className = "activity_item clickable";
   attrs.onClick = click;

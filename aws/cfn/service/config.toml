@@ -1,7 +1,7 @@
 [deploy]
 bucket = 'cfn-project-artifact'
 region = 'us-east-1'
-stack_name = 'CruddurServiceBackendFlask'
+stack_name = 'CrdSrvBackendFlask'
 
 [parameters]
 EnvFrontendUrl = 'https://thecloudproject.store'

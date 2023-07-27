@@ -1,7 +1,7 @@
 [deploy]
 bucket = 'cfn-project-artifact'
 region = 'us-east-1'
-stack_name = 'CruddurFrontend'
+stack_name = 'CrdFrontend'
 
 [parameters]
 RootBucketName='thecloudproject.store'

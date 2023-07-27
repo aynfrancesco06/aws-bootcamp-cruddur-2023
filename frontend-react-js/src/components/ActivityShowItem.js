@@ -19,7 +19,7 @@ export default function ActivityShowItem(props) {
           <div className="activity_content">
             <Link
               className="activity_avatar"
-              to={`/@` + props.activity.handle}
+              to={`/@`+props.activity.handle}
             ></Link>
             <div className="activity_meta">
               <div className="activity_identity">
@@ -29,7 +29,7 @@ export default function ActivityShowItem(props) {
                 >
                   {props.activity.display_name}
                 </Link>
-                <Link className="handle" to={`/@` + props.activity.handle}>
+                <Link className="handle" to={`/@`+props.activity.handle}>
                   @{props.activity.handle}
                 </Link>
               </div>

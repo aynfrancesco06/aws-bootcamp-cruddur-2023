@@ -1,9 +1,9 @@
 [deploy]
 bucket = 'cfn-project-artifact'
 region = 'us-east-1'
-stack_name = 'CruddurDb'
+stack_name = 'CrdDb'
 
 [parameters]
-NetworkingStack='CruddurNetwork'
-ClusterStack='CruddurCluster'
+NetworkingStack='CrdNet'
+ClusterStack='CrdCluster'
 MasterUsername = 'cruddurroot'
